@@ -17,7 +17,7 @@ sys.path[:0] = [p for p in (str(ROOT / "src"), str(ROOT)) if p not in sys.path]
 os.environ.setdefault("PULMONARY_IN_PROCESS", "1")
 os.environ.setdefault(
     "MODEL_BUNDLE_URL",
-    "https://github.com/mohamed1232005/Explainable-Multimodal-Pulmonary-Diagnostics"
+    "https://github.com/Nadeeen232/Multimodal-Pulmonary-Diagnostics"
     "/releases/download/model-bundle-0.2.0-team29/SIC_0.2.0-team29_model_bundle.zip",
 )
 # SHA-256 of dist/SIC_0.2.0-team29_model_bundle.zip in docs/submission_manifest.json.
