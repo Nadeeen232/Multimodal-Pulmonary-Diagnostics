@@ -205,32 +205,43 @@ alignment, permitted predictors, train-only fitting and grouped evaluation were
 checked. Ambiguous image names/conflicting UIDs are rejected, exact-image hashes
 are audited, and thresholds/fusion choices are selected on validation only.
 
-The team's report generator uses FLAN-T5-small with ResNet18 visual tokens and
+The team's first report generator used FLAN-T5-small with ResNet18 visual tokens and
 XRV pathology tags. Its XRV `densenet121-res224-all` configuration explicitly lists
 **OpenI** among pretraining sources, and Indiana IU radiographs come from the
 OpenI/NLMCXR collection. This documents **dataset-source pretraining overlap**.
 Without the upstream per-image training manifest, it does **not** prove that a
-particular local test image or patient was seen. Independent evaluation of this
-component remains unestablished; it is not accurate to claim proven image-level
-test leakage or quantify its effect from the available files.
+particular local test image or patient was seen; it is not accurate to claim proven
+image-level test leakage or quantify its effect from the available files.
 
 Sources: [XRV model definition](https://github.com/mlmed/torchxrayvision/blob/master/torchxrayvision/models.py)
 and [XRV OpenI dataset implementation](https://github.com/mlmed/torchxrayvision/blob/master/torchxrayvision/datasets.py).
 The deployed classifier uses ImageNet weights and does not use this XRV component.
 
+The final notebook, `notebooks/Team29_Report_Generation_Final.ipynb`, removes that
+tagger. Tags come from a linear classifier trained on IU training studies only, on
+1024-D features from the CheXpert-only `densenet121-res224-chex` weights; training
+tags are out-of-fold. After generation, a fixed finding sentence is added when the
+classifier is confident, using thresholds that reach 60% out-of-fold training
+precision. `src/pulmonary/learned_reports.py` loads this export and rejects exports
+built with the OpenI-trained weights.
+
 | Reporting option | Evidence | Decision |
 | --- | --- | --- |
 | Rule-based evidence summary | Deterministic, faithful to classifier/XAI inputs; not a learned radiology report | Default in API/UI |
-| Team learned FLAN-T5 draft | Export reload reproduced its saved example; fluent text with omission risks and unresolved upstream overlap | Experimental adapter only |
+| Team learned FLAN-T5 draft (final notebook) | Notebook reload verified prompts, classifier probabilities and forced findings; fluent text with omission risks | Experimental adapter only |
 
-The supplied learned-generator test checks found cardiomegaly in 7/23 reference
-cases, atelectasis in 1/45, opacity in 9/70 and granuloma in 3/49. These are limited
-lexical checks, not clinician-adjudicated scores, but demonstrate why fluency is
-insufficient. Its supplied BLEU 17.30 / ROUGE-L 0.377 / METEOR 0.326 are language
-similarity metrics, not diagnostic accuracy. Image swaps moved both visual tokens
-and XRV tags, so they do not isolate the visual-token branch. Two supplied V2
-folders represent different runs and were not merged into one result. The full
-notebook analysis and reporting decision are consolidated in this report.
+The notebook's supplied test results (362 studies) for the final model are BLEU 18.5 /
+ROUGE-L 0.391 / METEOR 0.339. Lexical finding checks found cardiomegaly in 7/23
+reference cases (14 mentions), atelectasis in 2/45 (7) and opacity in 15/70 (53);
+granuloma was dropped because its classifier was too weak. The superseded
+OpenI-tagger run had BLEU 17.30 / ROUGE-L 0.377 / METEOR 0.326 with cardiomegaly
+7/23, atelectasis 1/45 and opacity 9/70. These are limited lexical checks and
+language-similarity metrics, not clinician-adjudicated diagnostic accuracy, and
+they were not re-run in this repository. The test split was evaluated four times
+during notebook development, so these are not untouched-holdout results. Splits are
+by study, not patient. Image swaps move both visual tokens and tags, so they do not
+isolate the visual-token branch. The full notebook analysis and reporting decision
+are consolidated in this report.
 
 ## 6. Functional Tests and Working Solution
 
