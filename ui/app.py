@@ -1,4 +1,8 @@
-"""Streamlit client; all model execution belongs to the FastAPI service."""
+"""Streamlit client; all model execution belongs to the FastAPI service.
+
+The service is reached over HTTP (API_URL), or run in-process when
+PULMONARY_IN_PROCESS=1 for single-container hosts such as Streamlit Community Cloud.
+"""
 
 import base64
 import hashlib
@@ -12,15 +16,40 @@ st.set_page_config(page_title="Pulmonary Review Assistant", page_icon="🫁", la
 st.title("Pulmonary Review Assistant")
 st.caption("Samsung Innovation Campus · Multimodal research prototype")
 st.warning("Clinician verification is required. Model outputs are not clinically validated.")
-api = os.environ.get("API_URL", "http://127.0.0.1:8080").rstrip("/")
+
+
+class HttpService:
+    def __init__(self, url):
+        self.url = url.rstrip("/")
+
+    def get(self, path):
+        return requests.get(self.url + path, timeout=5)
+
+    def post(self, path, **kwargs):
+        return requests.post(self.url + path, timeout=120, **kwargs)
+
+
+@st.cache_resource(show_spinner="Loading the model…")
+def in_process_service():
+    from app.inprocess import InProcessService
+
+    return InProcessService()
+
+
+service = (
+    in_process_service()
+    if os.environ.get("PULMONARY_IN_PROCESS") == "1"
+    else HttpService(os.environ.get("API_URL", "http://127.0.0.1:8080"))
+)
 
 with st.sidebar:
     st.subheader("Analysis settings")
     show_explanation = st.checkbox("Include explanations", value=True)
     st.caption("The operating threshold is fixed by validation analysis.")
     try:
-        response = requests.get(f"{api}/health", timeout=5)
-        response.raise_for_status()
+        response = service.get("/health")
+        if response.status_code >= 400:
+            raise ValueError("Health check failed")
         health = response.json()
         if health["status"] == "ready":
             st.success("Model ready")
@@ -71,13 +100,12 @@ if analyze:
         try:
             if upload.size > 10 * 1024 * 1024:
                 raise ValueError("The image must be no larger than 10 MiB.")
-            response = requests.post(
-                f"{api}/{'explain' if show_explanation else 'predict'}",
+            response = service.post(
+                "/explain" if show_explanation else "/predict",
                 files={"image": (upload.name, upload.getvalue(), upload.type)},
                 data={"indication": indication, "comparison": comparison},
-                timeout=120,
             )
-            if not response.ok:
+            if response.status_code >= 400:
                 try:
                     detail = response.json().get("detail", "Request failed")
                 except ValueError:

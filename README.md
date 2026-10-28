@@ -200,6 +200,26 @@ $env:API_URL = 'http://127.0.0.1:8080'
 Choose either the local services or Docker for these ports; stop the other stack
 before starting a replacement.
 
+### Free hosting: Streamlit Community Cloud
+
+Community Cloud runs a single process, so
+[deploy/streamlit/streamlit_app.py](deploy/streamlit/streamlit_app.py) starts the UI
+with the FastAPI app in-process (`PULMONARY_IN_PROCESS=1`); requests use the same
+routes, validation and response schemas. The model bundle is downloaded from the
+`model-bundle-0.2.0-team29` GitHub release and loaded only if the archive matches the
+SHA-256 recorded in `docs/submission_manifest.json`; the engine then verifies each
+file against the bundle manifest.
+
+1. Attach `SIC_0.2.0-team29_model_bundle.zip` to a release tagged `model-bundle-0.2.0-team29`.
+2. At [share.streamlit.io](https://share.streamlit.io), create an app from this repository,
+   branch `main`, main file `deploy/streamlit/streamlit_app.py`.
+3. Under **Advanced settings**, choose **Python 3.12** (the pinned CPU Torch wheels require it).
+
+Dependencies come from [deploy/streamlit/requirements.txt](deploy/streamlit/requirements.txt).
+`MODEL_BUNDLE_URL` and `MODEL_BUNDLE_SHA256` can be overridden as app secrets. A
+software check with a random-weight bundle of the same size peaked at about 1.3 GiB
+of memory. Free apps sleep when idle; the first visit afterwards reloads the model.
+
 ## API reference
 
 | Method | Endpoint | Purpose / response |
@@ -390,6 +410,7 @@ app/                       FastAPI service and response schemas
 ui/                        Streamlit client and its Dockerfile
 src/pulmonary/             Data, models, evaluation, XAI, inference and CLI
 src/report_generator.py    Rule-based written reports
+deploy/streamlit/          Streamlit Community Cloud entrypoint and requirements
 notebooks/                 Final Team29 learned report-generation notebook
 configs/                   Training and runtime configuration
 scripts/                   Verification, presentation and workflow utilities
