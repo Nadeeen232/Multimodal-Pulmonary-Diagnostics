@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "captured_at_utc": "2026-10-26T13:09:35.084252+00:00",
+  "url": "http://127.0.0.1:8501",
+  "uid": "1330",
+  "image_sha256": "f9d509d33b7ba2a322189f76022bf0a8b0675cc0d97637fd4fd763cf0f7feb61",
+  "indication": "XXXX-year-old male with shortness of breath.",
+  "predicted_class": "Normal",
+  "probability": 0.014844851568341255,
+  "model_version": "0.1.0-fusion_early-e12abca4",
+  "report_sections_checked": [
+    "Predicted Class: Normal",
+    "Impression:",
+    "Visual Findings:",
+    "Clinical Context:",
+    "Recommendation:"
+  ],
+  "page_errors": []
+}

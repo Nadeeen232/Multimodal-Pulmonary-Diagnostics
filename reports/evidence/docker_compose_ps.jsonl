@@ -1,0 +1,2 @@
+{"Health": "healthy", "ID": "2abbee9ab6cf", "Image": "sic_graduation_project-api", "Name": "sic_graduation_project-api-1", "Ports": "127.0.0.1:8080->8080/tcp", "Service": "api", "State": "running"}
+{"Health": "healthy", "ID": "258ca5b3314a", "Image": "sic_graduation_project-ui", "Name": "sic_graduation_project-ui-1", "Ports": "127.0.0.1:8501->8501/tcp", "Service": "ui", "State": "running"}

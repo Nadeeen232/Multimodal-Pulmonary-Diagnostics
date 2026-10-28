@@ -1,0 +1,41 @@
+{
+  "prediction": {
+    "probability": 0.8455659747123718,
+    "predicted_label": "proxy_abnormal",
+    "threshold": 0.04685896076261997,
+    "priority_tier": "higher_review",
+    "priority_reason": "Model score meets the illustrative higher-review cutoff (0.523).",
+    "model_version": "0.1.0-fusion_early-e12abca4",
+    "calibrated": false
+  },
+  "text_highlights": [
+    {
+      "field": "indication",
+      "token": "Mass",
+      "start": 0,
+      "end": 4,
+      "contribution": 0.020129263401031494
+    },
+    {
+      "field": "indication",
+      "token": "in",
+      "start": 5,
+      "end": 7,
+      "contribution": -0.007481098175048828
+    },
+    {
+      "field": "indication",
+      "token": "axilla",
+      "start": 8,
+      "end": 14,
+      "contribution": 0.0
+    }
+  ],
+  "method": "Grad-CAM of final abnormal score; raw-token leave-one-out occlusion conditioned on the image. Contributions are score changes, not additive causal effects.",
+  "text_tokens_examined": 3,
+  "text_tokens_truncated": false,
+  "uid": "1115",
+  "weak_target": 0,
+  "source": "validation",
+  "selection_category": "FP"
+}

@@ -1,0 +1,83 @@
+{
+  "status": "passed",
+  "services": [
+    {
+      "Service": "api",
+      "Name": "sic_graduation_project-api-1",
+      "ID": "210890c3316a",
+      "Image": "sic_graduation_project-api",
+      "State": "running",
+      "Health": "healthy",
+      "Ports": "127.0.0.1:8080->8080/tcp"
+    },
+    {
+      "Service": "ui",
+      "Name": "sic_graduation_project-ui-1",
+      "ID": "258ca5b3314a",
+      "Image": "sic_graduation_project-ui",
+      "State": "running",
+      "Health": "healthy",
+      "Ports": "127.0.0.1:8501->8501/tcp"
+    }
+  ],
+  "checks": {
+    "ready": {
+      "status_code": 200
+    },
+    "docs": {
+      "status_code": 200
+    },
+    "ui_health": {
+      "status_code": 200
+    },
+    "ui_page": {
+      "status_code": 200
+    },
+    "predict": {
+      "status_code": 200,
+      "latency_seconds": 3.56780289998278,
+      "uid": "3212",
+      "prediction": {
+        "probability": 0.2134033441543579,
+        "predicted_label": "proxy_negative",
+        "threshold": 0.49000000000000005,
+        "priority_tier": "lower_review",
+        "priority_reason": "Model score is below the decision threshold (0.490); abnormalities are not ruled out.",
+        "model_version": "0.2.0-team29-47e281fc",
+        "calibrated": false,
+        "predicted_class": "Normal",
+        "generated_report": "Predicted Class: Normal\n\nImpression:\nThe AI model assigns an abnormality score of 21.3%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the lower right area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'male', 'tachycardia' were associated with a higher abnormality score. Clinical indication terms 'x-XXXX', 'mitomyopathy', 'XXXX-year-old' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRoutine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.",
+        "gradcam_region": "lower image-right image region (patient laterality unverified)"
+      },
+      "generated_report": "Predicted Class: Normal\n\nImpression:\nThe AI model assigns an abnormality score of 21.3%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the lower right area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'male', 'tachycardia' were associated with a higher abnormality score. Clinical indication terms 'x-XXXX', 'mitomyopathy', 'XXXX-year-old' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRoutine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.",
+      "gradcam_region": "lower image-right image region (patient laterality unverified)"
+    },
+    "explain": {
+      "status_code": 200,
+      "latency_seconds": 1.6787380000168923,
+      "uid": "3212",
+      "prediction": {
+        "probability": 0.2134033441543579,
+        "predicted_label": "proxy_negative",
+        "threshold": 0.49000000000000005,
+        "priority_tier": "lower_review",
+        "priority_reason": "Model score is below the decision threshold (0.490); abnormalities are not ruled out.",
+        "model_version": "0.2.0-team29-47e281fc",
+        "calibrated": false
+      },
+      "generated_report": "Predicted Class: Normal\n\nImpression:\nThe AI model assigns an abnormality score of 21.3%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the lower right area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'male', 'tachycardia' were associated with a higher abnormality score. Clinical indication terms 'x-XXXX', 'mitomyopathy', 'XXXX-year-old' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRoutine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.",
+      "gradcam_region": "lower image-right image region (patient laterality unverified)"
+    },
+    "missing_image": {
+      "status_code": 422
+    },
+    "ui_render_inside_container": {
+      "status": "passed",
+      "output": "Container UI rendered; internal API ready"
+    }
+  },
+  "model": {
+    "status": "ready",
+    "model_version": "0.2.0-team29-47e281fc"
+  }
+}

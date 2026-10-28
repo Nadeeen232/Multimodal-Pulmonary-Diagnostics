@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "archive": "dist/SIC_0.2.0-team29_tracking_evidence.zip",
+  "sha256": "8320c7efb9d364584ebcfd2adefe33371fe68d107830a6f3921817a74396b07b",
+  "runs": 10,
+  "listed_artifacts": 38,
+  "verification": "Restored to a different isolated root; MLflow client listed run artifacts using relative URIs"
+}

@@ -1,0 +1,69 @@
+{
+  "prediction": {
+    "probability": 0.9956223368644714,
+    "predicted_label": "proxy_abnormal",
+    "threshold": 0.04685896076261997,
+    "priority_tier": "higher_review",
+    "priority_reason": "Model score meets the illustrative higher-review cutoff (0.523).",
+    "model_version": "0.1.0-fusion_early-e12abca4",
+    "calibrated": false
+  },
+  "text_highlights": [
+    {
+      "field": "indication",
+      "token": "now",
+      "start": 27,
+      "end": 30,
+      "contribution": -0.0021834373474121094
+    },
+    {
+      "field": "indication",
+      "token": "Pt",
+      "start": 0,
+      "end": 2,
+      "contribution": 0.001987278461456299
+    },
+    {
+      "field": "indication",
+      "token": "with",
+      "start": 31,
+      "end": 35,
+      "contribution": -0.001118779182434082
+    },
+    {
+      "field": "indication",
+      "token": "recent",
+      "start": 7,
+      "end": 13,
+      "contribution": 0.0005194544792175293
+    },
+    {
+      "field": "indication",
+      "token": "has",
+      "start": 3,
+      "end": 6,
+      "contribution": -0.0001195669174194336
+    },
+    {
+      "field": "indication",
+      "token": "pancreatitis",
+      "start": 14,
+      "end": 26,
+      "contribution": 0.0
+    },
+    {
+      "field": "indication",
+      "token": "XXXX",
+      "start": 36,
+      "end": 40,
+      "contribution": 0.0
+    }
+  ],
+  "method": "Grad-CAM of final abnormal score; raw-token leave-one-out occlusion conditioned on the image. Contributions are score changes, not additive causal effects.",
+  "text_tokens_examined": 7,
+  "text_tokens_truncated": false,
+  "uid": "1289",
+  "weak_target": 1,
+  "source": "validation",
+  "selection_category": "TP"
+}

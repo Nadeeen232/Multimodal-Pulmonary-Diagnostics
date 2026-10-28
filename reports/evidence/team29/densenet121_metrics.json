@@ -1,0 +1,23 @@
+{
+  "accuracy": 0.7921348314606742,
+  "precision": 0.7469135802469136,
+  "recall": 0.7857142857142857,
+  "f1": 0.7658227848101266,
+  "roc_auc": 0.8644400154301146,
+  "pr_auc_average_precision": 0.831026665159534,
+  "brier_score": 0.14720260604553156,
+  "threshold": 0.4600000000000001,
+  "studies": 356,
+  "image_rows": 681,
+  "confusion_matrix": [
+    [
+      161,
+      41
+    ],
+    [
+      33,
+      121
+    ]
+  ],
+  "input_predictions": "study-mean scores"
+}

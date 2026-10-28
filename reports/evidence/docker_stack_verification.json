@@ -1,0 +1,84 @@
+{
+  "status": "passed",
+  "services": [
+    {
+      "Health": "healthy",
+      "ID": "2abbee9ab6cf",
+      "Image": "sic_graduation_project-api",
+      "Name": "sic_graduation_project-api-1",
+      "Ports": "127.0.0.1:8080->8080/tcp",
+      "Service": "api",
+      "State": "running"
+    },
+    {
+      "Health": "healthy",
+      "ID": "258ca5b3314a",
+      "Image": "sic_graduation_project-ui",
+      "Name": "sic_graduation_project-ui-1",
+      "Ports": "127.0.0.1:8501->8501/tcp",
+      "Service": "ui",
+      "State": "running"
+    }
+  ],
+  "checks": {
+    "ready": {
+      "status_code": 200
+    },
+    "docs": {
+      "status_code": 200
+    },
+    "ui_health": {
+      "status_code": 200
+    },
+    "ui_page": {
+      "status_code": 200
+    },
+    "predict": {
+      "status_code": 200,
+      "latency_seconds": 0.3404919000004156,
+      "uid": "1330",
+      "prediction": {
+        "probability": 0.014844851568341255,
+        "predicted_label": "proxy_negative",
+        "threshold": 0.04685896076261997,
+        "priority_tier": "lower_review",
+        "priority_reason": "Model score is below the decision threshold (0.047); abnormalities are not ruled out.",
+        "model_version": "0.1.0-fusion_early-e12abca4",
+        "calibrated": false,
+        "predicted_class": "Normal",
+        "generated_report": "Predicted Class: Normal\n\nImpression:\nThe AI model assigns an abnormality score of 1.5%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the upper central area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'breath', 'XXXX-year-old', 'male' were associated with a higher abnormality score. Clinical indication terms 'with', 'shortness' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRoutine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.",
+        "gradcam_region": "upper central image region (patient laterality unverified)"
+      },
+      "generated_report": "Predicted Class: Normal\n\nImpression:\nThe AI model assigns an abnormality score of 1.5%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the upper central area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'breath', 'XXXX-year-old', 'male' were associated with a higher abnormality score. Clinical indication terms 'with', 'shortness' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRoutine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.",
+      "gradcam_region": "upper central image region (patient laterality unverified)"
+    },
+    "explain": {
+      "status_code": 200,
+      "latency_seconds": 0.30756640000072366,
+      "uid": "1330",
+      "prediction": {
+        "probability": 0.014844851568341255,
+        "predicted_label": "proxy_negative",
+        "threshold": 0.04685896076261997,
+        "priority_tier": "lower_review",
+        "priority_reason": "Model score is below the decision threshold (0.047); abnormalities are not ruled out.",
+        "model_version": "0.1.0-fusion_early-e12abca4",
+        "calibrated": false
+      },
+      "generated_report": "Predicted Class: Normal\n\nImpression:\nThe AI model assigns an abnormality score of 1.5%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the upper central area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'breath', 'XXXX-year-old', 'male' were associated with a higher abnormality score. Clinical indication terms 'with', 'shortness' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRoutine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.",
+      "gradcam_region": "upper central image region (patient laterality unverified)"
+    },
+    "missing_image": {
+      "status_code": 422
+    },
+    "ui_render_inside_container": {
+      "status": "passed",
+      "output": "Container UI rendered; internal API ready"
+    }
+  },
+  "model": {
+    "status": "ready",
+    "model_version": "0.1.0-fusion_early-e12abca4"
+  },
+  "publication_note": "Host filesystem labels omitted from this public evidence copy; measured checks are unchanged."
+}

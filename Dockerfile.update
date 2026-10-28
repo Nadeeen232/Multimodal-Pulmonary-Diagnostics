@@ -1,0 +1,11 @@
+# Optional local code-only rebuild. Use Dockerfile for a clean dependency build.
+ARG RUNTIME_BASE=sic_graduation_project-api:latest
+FROM ${RUNTIME_BASE}
+USER root
+WORKDIR /build
+COPY pyproject.toml constraints-cpu.txt ./
+COPY src ./src
+COPY app ./app
+RUN /opt/venv/bin/pip install --no-cache-dir --no-deps --no-build-isolation .
+WORKDIR /app
+USER service

@@ -1,0 +1,96 @@
+{
+  "predicted_class": "Abnormal",
+  "prediction": {
+    "probability": 0.7105916142463684,
+    "predicted_label": "proxy_abnormal",
+    "threshold": 0.49000000000000005,
+    "priority_tier": "review",
+    "priority_reason": "Model score meets the validation-selected decision threshold (0.490).",
+    "model_version": "0.2.0-team29-47e281fc",
+    "calibrated": false
+  },
+  "text_highlights": [
+    {
+      "field": "indication",
+      "token": "dyspnea",
+      "start": 30,
+      "end": 37,
+      "contribution": 0.016848206520080566
+    },
+    {
+      "field": "comparison",
+      "token": "view",
+      "start": 7,
+      "end": 11,
+      "contribution": -0.01456671953201294
+    },
+    {
+      "field": "indication",
+      "token": "XXXX-year-old",
+      "start": 0,
+      "end": 13,
+      "contribution": -0.01039433479309082
+    },
+    {
+      "field": "comparison",
+      "token": "chest",
+      "start": 12,
+      "end": 17,
+      "contribution": -0.009389102458953857
+    },
+    {
+      "field": "comparison",
+      "token": "Single",
+      "start": 0,
+      "end": 6,
+      "contribution": 0.008409321308135986
+    },
+    {
+      "field": "indication",
+      "token": "with",
+      "start": 14,
+      "end": 18,
+      "contribution": 0.004275023937225342
+    },
+    {
+      "field": "indication",
+      "token": "onset",
+      "start": 24,
+      "end": 29,
+      "contribution": 0.0036190152168273926
+    },
+    {
+      "field": "comparison",
+      "token": "at",
+      "start": 23,
+      "end": 25,
+      "contribution": 0.000888824462890625
+    },
+    {
+      "field": "indication",
+      "token": "XXXX",
+      "start": 19,
+      "end": 23,
+      "contribution": 0.0
+    },
+    {
+      "field": "comparison",
+      "token": "XXXX",
+      "start": 18,
+      "end": 22,
+      "contribution": 0.0
+    },
+    {
+      "field": "comparison",
+      "token": "XXXX",
+      "start": 26,
+      "end": 30,
+      "contribution": 0.0
+    }
+  ],
+  "method": "Grad-CAM of ResNet50 branch of the final image-ensemble/text score; raw-token leave-one-out occlusion conditioned on the image. Contributions are score changes, not additive causal effects.",
+  "text_tokens_examined": 11,
+  "text_tokens_truncated": false,
+  "generated_report": "Predicted Class: Abnormal\n\nImpression:\nThe AI model assigns an abnormality score of 71.1%, at or above the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the lower central area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'dyspnea', 'Single' were associated with a higher abnormality score. Clinical indication terms 'view', 'XXXX-year-old', 'chest' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRadiologist review recommended. Clinician verification is required.",
+  "gradcam_region": "lower central image region (patient laterality unverified)"
+}

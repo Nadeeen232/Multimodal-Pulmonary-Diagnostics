@@ -1,0 +1,3 @@
+﻿NAME                           IMAGE                        COMMAND                  SERVICE   CREATED             STATUS                       PORTS
+sic_graduation_project-api-1   sic_graduation_project-api   "uvicorn app.main:ap…"   api       About an hour ago   Up About an hour (healthy)   127.0.0.1:8080->8080/tcp
+sic_graduation_project-ui-1    sic_graduation_project-ui    "streamlit run app.p…"   ui        About an hour ago   Up About an hour (healthy)   127.0.0.1:8501->8501/tcp

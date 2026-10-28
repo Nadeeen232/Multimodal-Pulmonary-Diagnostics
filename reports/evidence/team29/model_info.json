@@ -1,0 +1,19 @@
+{
+  "model_version": "0.2.0-team29-47e281fc",
+  "kind": "team29_late",
+  "classes": [
+    "proxy_negative",
+    "proxy_abnormal"
+  ],
+  "threshold": 0.49000000000000005,
+  "preprocessing_version": "team29-gray-lanczos-letterbox384-imagenet-v1",
+  "text_fields": [
+    "indication",
+    "comparison"
+  ],
+  "calibrated": false,
+  "selection": "validation ROC-AUC; validation balanced-accuracy thresholds",
+  "evaluation_unit": "study: mean image scores; UI analyzes one image at a time",
+  "gradcam_target": "ResNet50 branch of the final image-ensemble/text score",
+  "cohort_label_version": "team29-strict-core-tags-v1; broader thoracic weak labels"
+}

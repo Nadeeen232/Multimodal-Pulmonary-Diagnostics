@@ -1,0 +1,18 @@
+.venv
+.tmp
+.git
+__pycache__
+.pytest_cache
+data
+artifacts
+reports/generated
+*.db
+tests
+*.pt
+*.pth
+*.npy
+*.npz
+*.joblib
+*.pkl
+.env
+Team 1 - DL_SIC*.pptx

@@ -1,0 +1,13 @@
+Predicted Class: Normal
+
+Impression:
+The AI model assigns an abnormality score of 1.5%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.
+
+Visual Findings:
+Model attention primarily focuses on the upper central area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.
+
+Clinical Context:
+Clinical indication terms 'breath', 'XXXX-year-old', 'male' were associated with a higher abnormality score. Clinical indication terms 'with', 'shortness' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.
+
+Recommendation:
+Routine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.

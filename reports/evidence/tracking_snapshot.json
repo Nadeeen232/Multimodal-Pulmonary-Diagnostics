@@ -1,0 +1,260 @@
+{
+  "run_count": 37,
+  "experiments": [
+    {
+      "experiment": "sic-cnn",
+      "status": "FINISHED",
+      "runs": 2
+    },
+    {
+      "experiment": "sic-dummy",
+      "status": "FINISHED",
+      "runs": 1
+    },
+    {
+      "experiment": "sic-final-evaluation",
+      "status": "FINISHED",
+      "runs": 8
+    },
+    {
+      "experiment": "sic-linear",
+      "status": "FINISHED",
+      "runs": 23
+    },
+    {
+      "experiment": "sic-multimodal",
+      "status": "FINISHED",
+      "runs": 2
+    },
+    {
+      "experiment": "sic-tree_ensemble",
+      "status": "FINISHED",
+      "runs": 1
+    }
+  ],
+  "runs": [
+    {
+      "run_uuid": "6f5b43467bf9428d9efc1f5f37f6ee1b",
+      "name": "logistic-optuna",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "b7c3ffa7bae54cbba96e877ec958b7b3",
+      "name": "trial-0",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "8d5af86ed53e4de086c3fbf26b773cef",
+      "name": "trial-1",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "e480f0467e514fb7b0c8e2b019b9ed39",
+      "name": "trial-2",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "9a4be78bf15c44cca9cade5718a4c530",
+      "name": "trial-3",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "6f331229200a4a45b7ab56e5c3fd5a05",
+      "name": "trial-4",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "6fea9e39a26347799dc23a56dafc9243",
+      "name": "trial-5",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "0c028952455d45e68b433f479ba13072",
+      "name": "trial-6",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "5669d39efb134fee8f16a02bf025ccd4",
+      "name": "trial-7",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "14ccbd8c54064b799f98034bfcfdfd59",
+      "name": "trial-8",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "1eec66c27de34478bfaf478980dc1247",
+      "name": "trial-9",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "e44a7af0725d463f8bbe5c9bc6e23e4c",
+      "name": "trial-10",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "cfa3a9f9b292472ca0fd311fab1db7b3",
+      "name": "trial-11",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "a6a0bcee84224d6c8ae986b22bb41533",
+      "name": "trial-12",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "e019c622d98147958097efcedf3881ee",
+      "name": "trial-13",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "ea29bbc3e7c84a3ab3bc325726d8cad0",
+      "name": "trial-14",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "06589156a4934f25ae0980bcbcb0b710",
+      "name": "trial-15",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "2c846d3db1d646e2884b615f95d21dce",
+      "name": "trial-16",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "8b550675a60d422c8857bb74f893d504",
+      "name": "trial-17",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "f280a8ec8bb64a8e989fca73ee7d84f3",
+      "name": "trial-18",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "708e03d86dda4ca7aaf15fce2bc3d47b",
+      "name": "trial-19",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "e286908f552d4ec990e55a568863dbfa",
+      "name": "text_dummy",
+      "status": "FINISHED",
+      "experiment": "sic-dummy"
+    },
+    {
+      "run_uuid": "1bc192a090734631a03edddff8285a89",
+      "name": "text_logistic",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "644db6e3d7fb400683abc1e72c4a1493",
+      "name": "text_svm",
+      "status": "FINISHED",
+      "experiment": "sic-linear"
+    },
+    {
+      "run_uuid": "a76c35518909458fa8a70f38fdcfce09",
+      "name": "text_extra_trees",
+      "status": "FINISHED",
+      "experiment": "sic-tree_ensemble"
+    },
+    {
+      "run_uuid": "39770e15f6c9482a8f0a37c71f64e4f2",
+      "name": "resnet50",
+      "status": "FINISHED",
+      "experiment": "sic-cnn"
+    },
+    {
+      "run_uuid": "7f053af403ad4ef2b6db5e2226b5c1a0",
+      "name": "densenet121",
+      "status": "FINISHED",
+      "experiment": "sic-cnn"
+    },
+    {
+      "run_uuid": "67935590259149e88db4cae42f2ecdcb",
+      "name": "fusion_early",
+      "status": "FINISHED",
+      "experiment": "sic-multimodal"
+    },
+    {
+      "run_uuid": "c10493d12fcf44259e11ec68c15ca15f",
+      "name": "fusion_late",
+      "status": "FINISHED",
+      "experiment": "sic-multimodal"
+    },
+    {
+      "run_uuid": "bcff5469c712470b94c4620b472bdc76",
+      "name": "text_dummy",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    },
+    {
+      "run_uuid": "c0b9530c199c45758a9a3e726dbc117d",
+      "name": "text_logistic",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    },
+    {
+      "run_uuid": "8c896fdfecd34191a86a3b183e125214",
+      "name": "text_svm",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    },
+    {
+      "run_uuid": "5d3aeca4e1794137987d5e6c40f3243e",
+      "name": "text_extra_trees",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    },
+    {
+      "run_uuid": "6d6d1097e0244a04ba3fc7fdcd7d39ed",
+      "name": "resnet50",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    },
+    {
+      "run_uuid": "d7da2e0a16bd486eafa3ba67b4d367c3",
+      "name": "densenet121",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    },
+    {
+      "run_uuid": "96bd853e4d144e47b9bac5550a7e53d0",
+      "name": "fusion_early",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    },
+    {
+      "run_uuid": "56c9f2c72e8543278abcd228845b0588",
+      "name": "fusion_late",
+      "status": "FINISHED",
+      "experiment": "sic-final-evaluation"
+    }
+  ],
+  "source_revision": "unversioned"
+}

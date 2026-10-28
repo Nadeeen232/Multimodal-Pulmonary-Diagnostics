@@ -1,0 +1,48 @@
+{
+  "prediction": {
+    "probability": 0.0017891473835334182,
+    "predicted_label": "proxy_negative",
+    "threshold": 0.04685896076261997,
+    "priority_tier": "lower_review",
+    "priority_reason": "Model score is below the decision threshold (0.047); abnormalities are not ruled out.",
+    "model_version": "0.1.0-fusion_early-e12abca4",
+    "calibrated": false
+  },
+  "text_highlights": [
+    {
+      "field": "indication",
+      "token": "for",
+      "start": 5,
+      "end": 8,
+      "contribution": -0.0017539887921884656
+    },
+    {
+      "field": "indication",
+      "token": "one",
+      "start": 9,
+      "end": 12,
+      "contribution": -0.00034330703783780336
+    },
+    {
+      "field": "indication",
+      "token": "XXXX",
+      "start": 0,
+      "end": 4,
+      "contribution": 0.0
+    },
+    {
+      "field": "indication",
+      "token": "XXXX",
+      "start": 13,
+      "end": 17,
+      "contribution": 0.0
+    }
+  ],
+  "method": "Grad-CAM of final abnormal score; raw-token leave-one-out occlusion conditioned on the image. Contributions are score changes, not additive causal effects.",
+  "text_tokens_examined": 4,
+  "text_tokens_truncated": false,
+  "uid": "1630",
+  "weak_target": 1,
+  "source": "validation",
+  "selection_category": "FN"
+}

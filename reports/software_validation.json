@@ -1,0 +1,9 @@
+{
+  "tests_passed": 21,
+  "duration_seconds": 26.71,
+  "warnings": 1,
+  "scope": "software correctness; not clinical performance",
+  "full_artificial_workflow": "passed",
+  "fixture": ".tmp/software-smoke-825bec30",
+  "amp_gpu_check": "reports/generated/gpu_budget_check.json"
+}

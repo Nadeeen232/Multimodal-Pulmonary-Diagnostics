@@ -1,0 +1,82 @@
+{
+  "predicted_class": "Normal",
+  "prediction": {
+    "probability": 0.2134033441543579,
+    "predicted_label": "proxy_negative",
+    "threshold": 0.49000000000000005,
+    "priority_tier": "lower_review",
+    "priority_reason": "Model score is below the decision threshold (0.490); abnormalities are not ruled out.",
+    "model_version": "0.2.0-team29-47e281fc",
+    "calibrated": false
+  },
+  "text_highlights": [
+    {
+      "field": "indication",
+      "token": "male",
+      "start": 14,
+      "end": 18,
+      "contribution": 0.00946807861328125
+    },
+    {
+      "field": "comparison",
+      "token": "x-XXXX",
+      "start": 6,
+      "end": 12,
+      "contribution": -0.007552772760391235
+    },
+    {
+      "field": "indication",
+      "token": "mitomyopathy",
+      "start": 24,
+      "end": 36,
+      "contribution": -0.006265163421630859
+    },
+    {
+      "field": "indication",
+      "token": "XXXX-year-old",
+      "start": 0,
+      "end": 13,
+      "contribution": -0.006079360842704773
+    },
+    {
+      "field": "indication",
+      "token": "tachycardia",
+      "start": 41,
+      "end": 52,
+      "contribution": 0.006073117256164551
+    },
+    {
+      "field": "indication",
+      "token": "and",
+      "start": 37,
+      "end": 40,
+      "contribution": -0.005795866250991821
+    },
+    {
+      "field": "comparison",
+      "token": "Chest",
+      "start": 0,
+      "end": 5,
+      "contribution": -0.004536330699920654
+    },
+    {
+      "field": "indication",
+      "token": "with",
+      "start": 19,
+      "end": 23,
+      "contribution": -0.0034991055727005005
+    },
+    {
+      "field": "comparison",
+      "token": "XXXX",
+      "start": 14,
+      "end": 18,
+      "contribution": 0.0
+    }
+  ],
+  "method": "Grad-CAM of ResNet50 branch of the final image-ensemble/text score; raw-token leave-one-out occlusion conditioned on the image. Contributions are score changes, not additive causal effects.",
+  "text_tokens_examined": 9,
+  "text_tokens_truncated": false,
+  "generated_report": "Predicted Class: Normal\n\nImpression:\nThe AI model assigns an abnormality score of 21.3%, below the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the lower right area of the radiograph. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'male', 'tachycardia' were associated with a higher abnormality score. Clinical indication terms 'x-XXXX', 'mitomyopathy', 'XXXX-year-old' were associated with a lower abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nRoutine radiologist review. A Normal prediction does not exclude disease. Clinician verification is required.",
+  "gradcam_region": "lower image-right image region (patient laterality unverified)"
+}

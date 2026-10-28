@@ -1,0 +1,51 @@
+.venv/
+.tmp/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.env
+.env.*
+!.env.example
+.kaggle/
+configs/local.yaml
+/data/
+artifacts/**
+!artifacts/README.md
+mlruns/
+optuna_study.db
+*.pt
+*.pth
+*.npy
+*.npz
+*.joblib
+*.pkl
+mlartifacts/
+*.db
+*.db-shm
+*.db-wal
+reports/generated/**
+reports/*.log
+reports/*_process.json
+*.log
+.idea/
+.vscode/
+.codex/
+.agents/
+/Team 1 - DL_SIC*.pptx
+
+# Public source excludes presentation binaries; retain normal Word reports.
+*.pptx
+!docs/**/*.docx
+# Traverse generated report folders so Word reports remain eligible there too.
+!reports/generated/**/
+!reports/**/*.docx
+# Office/LibreOffice lock files are not deliverables.
+~$*
+.~lock.*#
+# Removed duplicate review; use the consolidated technical evidence report.
+/docs/team_model_review.md
+/docs/team_model_review.docx

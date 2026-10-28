@@ -1,0 +1,251 @@
+{
+  "source": "artifacts/team_classification/mlflow.db",
+  "method": "Read-only SQLite export; artifact URIs and workstation paths excluded",
+  "model_version": "0.2.0-team29-47e281fc",
+  "run_count": 10,
+  "statuses": {
+    "KILLED": 2,
+    "FAILED": 1,
+    "FINISHED": 7
+  },
+  "runs": [
+    {
+      "run_id": "1e93a50caa60450aad3de09f3b9f7c2d",
+      "name": "resnet50",
+      "experiment": "team29-classification-reproduction",
+      "status": "KILLED",
+      "params": {
+        "model": "resnet50",
+        "batch_size": "8",
+        "amp": "True",
+        "image_size": "384",
+        "seed": "42",
+        "preprocess": "team29-gray-lanczos-letterbox384-imagenet-v1",
+        "source_digest": "20fd0232e4a7c62f1a4089802073bfd456a769fce428991cdeb906fdc589da5e",
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "max_epochs": "18"
+      },
+      "metrics": {
+        "train_loss": 0.564890962579789,
+        "validation_loss": 0.5394659271298112
+      }
+    },
+    {
+      "run_id": "1e4494f15ba94b9caf07999dbaae100f",
+      "name": "resnet50",
+      "experiment": "team29-classification-reproduction",
+      "status": "KILLED",
+      "params": {
+        "model": "resnet50",
+        "batch_size": "8",
+        "amp": "True",
+        "image_size": "384",
+        "seed": "42",
+        "preprocess": "team29-gray-lanczos-letterbox384-imagenet-v1",
+        "source_digest": "1a7201576f27938e1e08040a0e01730f546b01ccd64511e38b5abec1132211ab",
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "max_epochs": "18",
+        "cudnn_enabled": "False",
+        "resumed_checkpoint_epoch": "4"
+      },
+      "metrics": {}
+    },
+    {
+      "run_id": "eef8ed58815a4c6491e93fab14df977a",
+      "name": "resnet50",
+      "experiment": "team29-classification-reproduction",
+      "status": "FAILED",
+      "params": {
+        "model": "resnet50",
+        "batch_size": "8",
+        "amp": "True",
+        "image_size": "384",
+        "seed": "42",
+        "preprocess": "team29-gray-lanczos-letterbox384-imagenet-v1",
+        "source_digest": "7bbe54e0d8e6fbcb10343c05f79d75136cd90c46adea245c672a4fc77a93d06b",
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "max_epochs": "18",
+        "cudnn_enabled": "True",
+        "cudnn_benchmark": "True",
+        "cudnn_deterministic": "False",
+        "resumed_checkpoint_epoch": "4"
+      },
+      "metrics": {
+        "train_loss": 0.3979792749213075,
+        "validation_loss": 0.5749908928265153
+      }
+    },
+    {
+      "run_id": "c8d6c89416aa459189cfc42302a8f924",
+      "name": "resnet50",
+      "experiment": "team29-classification-reproduction",
+      "status": "FINISHED",
+      "params": {
+        "model": "resnet50",
+        "batch_size": "8",
+        "amp": "True",
+        "image_size": "384",
+        "seed": "42",
+        "preprocess": "team29-gray-lanczos-letterbox384-imagenet-v1",
+        "source_digest": "d4ea9c0bf520df0419c1beb0c53981a5ef6a0447266054a658eefba8d1f2ba18",
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "max_epochs": "18",
+        "cudnn_enabled": "True",
+        "cudnn_benchmark": "True",
+        "cudnn_deterministic": "False",
+        "resumed_checkpoint_epoch": "7"
+      },
+      "metrics": {
+        "train_loss": 0.33295039070674237,
+        "validation_loss": 0.6148824363968727
+      }
+    },
+    {
+      "run_id": "edb3a808dcd643768eebee4bbd004efd",
+      "name": "densenet121",
+      "experiment": "team29-classification-reproduction",
+      "status": "FINISHED",
+      "params": {
+        "model": "densenet121",
+        "batch_size": "8",
+        "amp": "True",
+        "image_size": "384",
+        "seed": "42",
+        "preprocess": "team29-gray-lanczos-letterbox384-imagenet-v1",
+        "source_digest": "d4ea9c0bf520df0419c1beb0c53981a5ef6a0447266054a658eefba8d1f2ba18",
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "max_epochs": "18",
+        "cudnn_enabled": "True",
+        "cudnn_benchmark": "True",
+        "cudnn_deterministic": "False",
+        "resumed_checkpoint_epoch": "0"
+      },
+      "metrics": {
+        "train_loss": 0.39980112081892744,
+        "validation_loss": 0.5282627380541239
+      }
+    },
+    {
+      "run_id": "e23dfcb3e2374d2284109e9b975726ce",
+      "name": "text_only-frozen-evaluation",
+      "experiment": "team29-classification-reproduction",
+      "status": "FINISHED",
+      "params": {
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "selection_objective": "validation ROC-AUC; validation balanced-accuracy thresholds",
+        "threshold": "0.49000000000000005",
+        "image_weight": "0"
+      },
+      "metrics": {
+        "test_accuracy": 0.6629213483146067,
+        "test_f1": 0.5652173913043478,
+        "test_roc_auc": 0.7202970297029705
+      }
+    },
+    {
+      "run_id": "1c3b1b62ec644b46b093d706a743d93b",
+      "name": "resnet50-frozen-evaluation",
+      "experiment": "team29-classification-reproduction",
+      "status": "FINISHED",
+      "params": {
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "selection_objective": "validation ROC-AUC; validation balanced-accuracy thresholds",
+        "threshold": "0.44000000000000006",
+        "image_weight": "0",
+        "selected_epoch": "7",
+        "checkpoint_sha256": "e80c59f9835cc514d83bfeef8d7a28d6843f5fbfdf2f1af4fea374390cf8f460"
+      },
+      "metrics": {
+        "test_accuracy": 0.8230337078651685,
+        "test_f1": 0.7961165048543689,
+        "test_roc_auc": 0.8783914105696283
+      }
+    },
+    {
+      "run_id": "bca2073019bd44b1b43e0c604d0424d0",
+      "name": "densenet121-frozen-evaluation",
+      "experiment": "team29-classification-reproduction",
+      "status": "FINISHED",
+      "params": {
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "selection_objective": "validation ROC-AUC; validation balanced-accuracy thresholds",
+        "threshold": "0.4600000000000001",
+        "image_weight": "0",
+        "selected_epoch": "10",
+        "checkpoint_sha256": "5ef4a6d6b7e21aac0122a525a925d70bb7ad1b8cd3b78b70fbf2f9438e29e77f"
+      },
+      "metrics": {
+        "test_accuracy": 0.7921348314606742,
+        "test_f1": 0.7658227848101266,
+        "test_roc_auc": 0.8644400154301146
+      }
+    },
+    {
+      "run_id": "e757868459d74c15bf7e86b8dba25888",
+      "name": "image_ensemble-frozen-evaluation",
+      "experiment": "team29-classification-reproduction",
+      "status": "FINISHED",
+      "params": {
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "selection_objective": "validation ROC-AUC; validation balanced-accuracy thresholds",
+        "threshold": "0.4800000000000001",
+        "image_weight": "0"
+      },
+      "metrics": {
+        "test_accuracy": 0.8174157303370787,
+        "test_f1": 0.7854785478547854,
+        "test_roc_auc": 0.8757232866143757
+      }
+    },
+    {
+      "run_id": "92fa35960b2a4fbfa5993237ee8a0ee8",
+      "name": "multimodal_fusion-frozen-evaluation",
+      "experiment": "team29-classification-reproduction",
+      "status": "FINISHED",
+      "params": {
+        "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+        "selection_objective": "validation ROC-AUC; validation balanced-accuracy thresholds",
+        "threshold": "0.49000000000000005",
+        "image_weight": "0.7000000000000001"
+      },
+      "metrics": {
+        "test_accuracy": 0.8286516853932584,
+        "test_f1": 0.7918088737201365,
+        "test_roc_auc": 0.8815738716728815
+      }
+    }
+  ],
+  "text_selection": {
+    "validation_auc": 0.6725625121147508,
+    "params": {
+      "C": 0.3,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 2000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 42,
+      "solver": "liblinear",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "training_manifest": "a673a60197faf6722bdbfe881f0db935c7266b5f1e375b8bd2ac75b1c91a5a5d"
+  },
+  "fusion_selection": {
+    "image_weight": 0.7000000000000001,
+    "thresholds": {
+      "resnet50": 0.44000000000000006,
+      "densenet121": 0.4600000000000001,
+      "image_ensemble": 0.4800000000000001,
+      "text_only": 0.49000000000000005,
+      "multimodal_fusion": 0.49000000000000005
+    },
+    "objective": "validation ROC-AUC; validation balanced-accuracy thresholds",
+    "cohort_manifest": "47e281fc13b74f0c498e0f6fe2896e50bae9e147a49ea0c795b3c750ed369b21",
+    "status": "choices frozen before test evaluation"
+  }
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "uid": "3212",
+    "outcome_against_weak_label": "true_negative",
+    "status": "passed",
+    "model_version": "0.2.0-team29-47e281fc",
+    "probability": 0.2134033441543579,
+    "predicted_class": "Normal"
+  },
+  {
+    "uid": "2348",
+    "outcome_against_weak_label": "true_positive",
+    "status": "passed",
+    "model_version": "0.2.0-team29-47e281fc",
+    "probability": 0.9078880548477173,
+    "predicted_class": "Abnormal"
+  },
+  {
+    "uid": "2829",
+    "outcome_against_weak_label": "false_positive",
+    "status": "passed",
+    "model_version": "0.2.0-team29-47e281fc",
+    "probability": 0.7105916142463684,
+    "predicted_class": "Abnormal"
+  }
+]

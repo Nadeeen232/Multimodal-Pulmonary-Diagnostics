@@ -1,0 +1,40 @@
+{
+  "predicted_class": "Abnormal",
+  "prediction": {
+    "probability": 0.9078880548477173,
+    "predicted_label": "proxy_abnormal",
+    "threshold": 0.49000000000000005,
+    "priority_tier": "higher_review",
+    "priority_reason": "Model score meets the illustrative higher-review cutoff (0.745).",
+    "model_version": "0.2.0-team29-47e281fc",
+    "calibrated": false
+  },
+  "text_highlights": [
+    {
+      "field": "indication",
+      "token": "Short",
+      "start": 0,
+      "end": 5,
+      "contribution": 0.02922666072845459
+    },
+    {
+      "field": "indication",
+      "token": "of",
+      "start": 6,
+      "end": 8,
+      "contribution": 0.016759276390075684
+    },
+    {
+      "field": "indication",
+      "token": "breath",
+      "start": 9,
+      "end": 15,
+      "contribution": 0.010440051555633545
+    }
+  ],
+  "method": "Grad-CAM of ResNet50 branch of the final image-ensemble/text score; raw-token leave-one-out occlusion conditioned on the image. Contributions are score changes, not additive causal effects.",
+  "text_tokens_examined": 3,
+  "text_tokens_truncated": false,
+  "generated_report": "Predicted Class: Abnormal\n\nImpression:\nThe AI model assigns an abnormality score of 90.8%, at or above the configured decision threshold. This score is uncalibrated and is not a probability of disease.\n\nVisual Findings:\nModel attention primarily focuses on the middle area of the radiograph, spanning the image width. Attention does not establish a lesion or its absence; image position does not verify anatomy or patient laterality.\n\nClinical Context:\nClinical indication terms 'Short', 'of', 'breath' were associated with a higher abnormality score. These associations describe model sensitivity, not the clinical significance of symptoms.\n\nRecommendation:\nPrioritized radiologist review. Queue priority does not establish clinical urgency. Clinician verification is required.",
+  "gradcam_region": "middle image region, spanning the image width"
+}

@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "browser": "msedge (Playwright, isolated headless context)",
+  "uid": "3212",
+  "routes": [
+    "http://127.0.0.1:8080/docs",
+    "http://127.0.0.1:8501"
+  ],
+  "checks": [
+    "Swagger operations visible",
+    "Model ready",
+    "real upload and analysis",
+    "generated report visible"
+  ],
+  "page_errors": []
+}

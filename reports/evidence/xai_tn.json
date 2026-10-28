@@ -1,0 +1,132 @@
+{
+  "prediction": {
+    "probability": 0.011923165060579777,
+    "predicted_label": "proxy_negative",
+    "threshold": 0.04685896076261997,
+    "priority_tier": "lower_review",
+    "priority_reason": "Model score is below the decision threshold (0.047); abnormalities are not ruled out.",
+    "model_version": "0.1.0-fusion_early-e12abca4",
+    "calibrated": false
+  },
+  "text_highlights": [
+    {
+      "field": "indication",
+      "token": "right",
+      "start": 34,
+      "end": 39,
+      "contribution": 0.004490423947572708
+    },
+    {
+      "field": "indication",
+      "token": "side",
+      "start": 40,
+      "end": 44,
+      "contribution": -0.004281333647668362
+    },
+    {
+      "field": "indication",
+      "token": "in",
+      "start": 31,
+      "end": 33,
+      "contribution": 0.0035534435883164406
+    },
+    {
+      "field": "indication",
+      "token": "chest",
+      "start": 48,
+      "end": 53,
+      "contribution": -0.000666358508169651
+    },
+    {
+      "field": "indication",
+      "token": "female",
+      "start": 14,
+      "end": 20,
+      "contribution": 0.000589338131248951
+    },
+    {
+      "field": "indication",
+      "token": "of",
+      "start": 45,
+      "end": 47,
+      "contribution": -0.0005057472735643387
+    },
+    {
+      "field": "indication",
+      "token": "pain",
+      "start": 26,
+      "end": 30,
+      "contribution": -0.0003662882372736931
+    },
+    {
+      "field": "indication",
+      "token": "with",
+      "start": 21,
+      "end": 25,
+      "contribution": -0.00023582763969898224
+    },
+    {
+      "field": "indication",
+      "token": "breathing",
+      "start": 88,
+      "end": 97,
+      "contribution": -0.00020970869809389114
+    },
+    {
+      "field": "indication",
+      "token": "and",
+      "start": 79,
+      "end": 82,
+      "contribution": 0.00017073564231395721
+    },
+    {
+      "field": "indication",
+      "token": "XXXX-year-old",
+      "start": 0,
+      "end": 13,
+      "contribution": -4.0479935705661774e-05
+    },
+    {
+      "field": "indication",
+      "token": "with",
+      "start": 69,
+      "end": 73,
+      "contribution": -1.722387969493866e-05
+    },
+    {
+      "field": "indication",
+      "token": "that",
+      "start": 54,
+      "end": 58,
+      "contribution": 0.0
+    },
+    {
+      "field": "indication",
+      "token": "increases",
+      "start": 59,
+      "end": 68,
+      "contribution": 0.0
+    },
+    {
+      "field": "indication",
+      "token": "XXXX",
+      "start": 74,
+      "end": 78,
+      "contribution": 0.0
+    },
+    {
+      "field": "indication",
+      "token": "deep",
+      "start": 83,
+      "end": 87,
+      "contribution": 0.0
+    }
+  ],
+  "method": "Grad-CAM of final abnormal score; raw-token leave-one-out occlusion conditioned on the image. Contributions are score changes, not additive causal effects.",
+  "text_tokens_examined": 16,
+  "text_tokens_truncated": false,
+  "uid": "3015",
+  "weak_target": 0,
+  "source": "validation",
+  "selection_category": "TN"
+}

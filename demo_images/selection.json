@@ -1,0 +1,53 @@
+{
+  "seed": 42,
+  "split": "test",
+  "model_version": "0.1.0-fusion_early-e12abca4",
+  "method": "Seeded random sampling within saved study-level TN, TP, and error pools, retaining only cases whose individual image prediction matches the requested category. No retraining or changes to evaluation artifacts.",
+  "cases": [
+    {
+      "category": "normal",
+      "uid": "1330",
+      "filename": "01_true_negative_uid_1330.png",
+      "indication_file": "01_true_negative_uid_1330_indication.txt",
+      "source_path": "images/images_normalized/1330_IM-0213-1001.dcm.png",
+      "source_sha256": "f9d509d33b7ba2a322189f76022bf0a8b0675cc0d97637fd4fd763cf0f7feb61",
+      "weak_label": "normal",
+      "predicted_label": "proxy_negative",
+      "outcome": "true_negative",
+      "probability": 0.014844886027276516,
+      "threshold": 0.04685896076261997,
+      "indication": "XXXX-year-old male with shortness of breath.",
+      "comparison": "PA and lateral chest radiographs XXXX."
+    },
+    {
+      "category": "abnormal",
+      "uid": "3866",
+      "filename": "02_true_positive_uid_3866.png",
+      "indication_file": "02_true_positive_uid_3866_indication.txt",
+      "source_path": "images/images_normalized/3866_IM-1959-0001-0002.dcm.png",
+      "source_sha256": "5edaf6880f907f2a2cddebd1512c18ddef1d6ea56a70944456b417ca3380a055",
+      "weak_label": "abnormal",
+      "predicted_label": "proxy_abnormal",
+      "outcome": "true_positive",
+      "probability": 0.9947283864021301,
+      "threshold": 0.04685896076261997,
+      "indication": "Shortness of breath for the XXXX XXXX and half.",
+      "comparison": "None."
+    },
+    {
+      "category": "false_prediction",
+      "uid": "1550",
+      "filename": "03_false_positive_uid_1550.png",
+      "indication_file": "03_false_positive_uid_1550_indication.txt",
+      "source_path": "images/images_normalized/1550_IM-0359-3003.dcm.png",
+      "source_sha256": "93a1f3f4fc90c0980c6206dd42a2cf1154deb778ca1ef3a76b741140a7992c6c",
+      "weak_label": "normal",
+      "predicted_label": "proxy_abnormal",
+      "outcome": "false_positive",
+      "probability": 0.1354605108499527,
+      "threshold": 0.04685896076261997,
+      "indication": "XXXX year old, XXXX XXXX one month.",
+      "comparison": "None."
+    }
+  ]
+}

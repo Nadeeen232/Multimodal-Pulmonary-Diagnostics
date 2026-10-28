@@ -1,0 +1,4 @@
+extends: default.yaml
+output_root: artifacts/metadata-only
+reports_root: reports/generated/metadata-only
+tracking_uri: sqlite:///artifacts/metadata-only/mlflow.db
