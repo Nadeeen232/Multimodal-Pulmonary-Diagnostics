@@ -359,6 +359,10 @@ experiment used a different cohort and cost objective and is not directly compar
 
 The report stays rule-based by default. A separately tested FLAN-T5 adapter is
 available for experimental report drafting; the review explains its limitations.
+It loads the export of
+[notebooks/Team29_Report_Generation_Final.ipynb](notebooks/Team29_Report_Generation_Final.ipynb):
+IU-classifier finding tags on CheXpert-only XRV features plus forced findings. Exports
+tagged with the OpenI-trained `densenet121-res224-all` weights are rejected.
 
 ## Verification
 
@@ -386,6 +390,7 @@ app/                       FastAPI service and response schemas
 ui/                        Streamlit client and its Dockerfile
 src/pulmonary/             Data, models, evaluation, XAI, inference and CLI
 src/report_generator.py    Rule-based written reports
+notebooks/                 Final Team29 learned report-generation notebook
 configs/                   Training and runtime configuration
 scripts/                   Verification, presentation and workflow utilities
 tests/                     Data contracts, API, model integration and UI checks

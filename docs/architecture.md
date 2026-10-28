@@ -19,6 +19,9 @@ Grad-CAM targets the ResNet50 branch of the final fused score. Raw-token occlusi
 measures text associations with the image scores fixed. The default written
 report remains deterministic. The reviewed FLAN-T5 adapter is an experimental
 option outside the default service; see [technical_evidence_report.md](technical_evidence_report.md).
+`src/pulmonary/learned_reports.py` loads the export of
+`notebooks/Team29_Report_Generation_Final.ipynb`, whose finding tags come from an IU
+classifier on CheXpert-only XRV features rather than the OpenI-trained weights.
 
 ## Reference v1 workflow
 

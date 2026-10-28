@@ -1,4 +1,7 @@
-"""Verify the imported learned report model on saved validation-study features."""
+"""Verify the imported final learned report model on saved validation-study features.
+
+The export comes from notebooks/Team29_Report_Generation_Final.ipynb (section 09).
+"""
 
 import argparse
 import os
@@ -21,7 +24,7 @@ from pulmonary.learned_reports import LearnedReportGenerator
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default="artifacts/team_import")
-    parser.add_argument("--run", default="20261026_180944_731991")
+    parser.add_argument("--run", default="20261028_113222_436989")
     parser.add_argument("--examples", type=int, default=3)
     args = parser.parse_args()
     torch.set_num_threads(2)
@@ -43,26 +46,29 @@ def main():
         raise ValueError("Report exact-image split overlap")
     with np.load(source / "image_features.npz", allow_pickle=False) as archive:
         features = dict(zip(archive["names"].astype(str), archive["vectors"], strict=True))
-    names = np.load(root / "xrv_selected/names.npy", allow_pickle=False).astype(str)
-    score_values = np.load(root / "xrv_selected/scores.npy", allow_pickle=False)
-    pathologies = (
-        np.load(root / "xrv_selected/pathologies.npy", allow_pickle=False).astype(str).tolist()
-    )
-    if pathologies != generator.config["tags"]["pathologies"]:
-        raise ValueError("XRV pathology order mismatch")
-    scores = dict(zip(names, score_values, strict=True))
+    weights = generator.config["tags"]["xrv_weights"]
+    with np.load(root / f"xrv_pooled_{weights.split('-')[-1]}.npz", allow_pickle=False) as archive:
+        if str(archive["weights"]) != weights:
+            raise ValueError("Pooled XRV features were built with different weights")
+        pooled = dict(zip(archive["names"].astype(str), archive["pooled"], strict=True))
     results = []
     for row in parts["val"][: args.examples]:
         prediction = generator.generate_features(
             np.stack([features[n] for n in row["image_names"]]),
             row["view_ids"],
             row["indication"],
-            np.stack([scores[n] for n in row["image_names"]]),
+            np.stack([pooled[n] for n in row["image_names"]]),
         )
         results.append({"uid": row["uid"], "reference": row["target_report"], **prediction})
         print(json.dumps(results[-1], indent=2), flush=True)
-    expected_first = "findings: the heart size and mediastinal contours are within normal limits. there is no focal consolidation, pleural effusion, or pneumothorax. the lungs are clear. impression: no acute cardiopulmonary abnormality."
-    verified = bool(results) and results[0]["report"] == expected_first
+    # Printed by the notebook's reload check (section 09) for the first validation study.
+    expected_prompt = "generate chest x-ray report. indication: preop chest x- .. image findings: degenerative spine"
+    expected_first = "findings: the cardiomediastinal silhouette is within normal limits for size and contour. the lungs are clear. no focal consolidation, pneumothorax, or pleural effusion. impression: no acute cardiopulmonary abnormality."
+    verified = (
+        bool(results)
+        and results[0]["prompt"] == expected_prompt
+        and results[0]["report"] == expected_first
+    )
     result = {
         "run": args.run,
         "split": "validation",
