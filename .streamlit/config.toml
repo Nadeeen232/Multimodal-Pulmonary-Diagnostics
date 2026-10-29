@@ -1,0 +1,40 @@
+# Pulmonary Review Assistant theme. Light and dark follow the viewer's system setting;
+# ui/theme.py mirrors these colors for the custom HTML blocks.
+
+[server]
+maxUploadSize = 10
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+font = "Geist:https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap, sans-serif"
+codeFont = "Geist Mono:https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap, monospace"
+headingFontWeights = [600, 600, 600, 600, 600, 600]
+baseRadius = "10px"
+buttonRadius = "8px"
+showWidgetBorder = true
+
+[theme.light]
+base = "light"
+primaryColor = "#0F766E"
+backgroundColor = "#F6F7F9"
+secondaryBackgroundColor = "#EEF1F4"
+textColor = "#111827"
+borderColor = "#E3E7EC"
+linkColor = "#0F766E"
+greenColor = "#15803D"
+orangeColor = "#B45309"
+redColor = "#B42318"
+
+[theme.dark]
+base = "dark"
+primaryColor = "#2DD4BF"
+backgroundColor = "#0C1014"
+secondaryBackgroundColor = "#141A21"
+textColor = "#E6EAF0"
+borderColor = "#232B35"
+linkColor = "#2DD4BF"
+greenColor = "#4ADE80"
+orangeColor = "#F59E0B"
+redColor = "#F97066"

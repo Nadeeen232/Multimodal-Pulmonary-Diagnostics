@@ -1,7 +1,7 @@
-# Project log: report notebook, deployment and model retraining
+# Project log: report notebook, deployment, model retraining and the new UI
 
 This file explains what changed in the repository after the original SIC submission, why it
-changed, and how you can repeat each step yourself. It covers three pieces of work done in
+changed, and how you can repeat each step yourself. It covers four pieces of work done in
 October 2026 by Nadeen's account (Nadeeen232).
 
 The live app is at <https://multimodal-pulmonary-diagnostics.streamlit.app/> and the code it runs
@@ -130,6 +130,44 @@ from the original, since both were trained on the same split. The export script 
 
 Before publishing, we loaded the ZIP through the same pinned download path the app uses, on the
 CPU-only library versions the app installs. It loaded, and the demo scores matched the GPU run.
+
+## 4. A new look for the web app
+
+The first deployed version used Streamlit's default look: a large yellow warning banner, a sidebar
+with one checkbox, raw results stacked down the page and the report in a greyed-out text box. The
+redesign keeps every feature and every API call. Only the layout and styling changed.
+
+What you see now:
+
+- A header with the app name and a status badge showing whether the model is ready, plus the
+  model version.
+- A **Study** panel on the left for the X-ray, the clinical indication and an optional comparison.
+- A **Result** panel on the right. It shows Normal or Abnormal as a colored pill, the score in
+  large numbers, and a scale with the 35% decision threshold so you can see how far the score is
+  from it. Below that you can switch between the X-ray, the Grad-CAM heatmap or both side by
+  side. The indication words that pushed the score up or down are highlighted, and the
+  rule-based report is laid out section by section with download buttons.
+- Three buttons that load held-out test studies from `demo_images/team29/`: a normal case, an
+  abnormal case and a known miss (a normal study the model flags). Anyone can try the app
+  without having an X-ray at hand. The model never trained on these three studies.
+- Light and dark themes that follow the viewer's system setting. Dark mode suits X-rays, since
+  radiology viewers are dark. A small script in `ui/theme.py` reads which theme Streamlit is
+  showing and switches the custom colors, because Streamlit does not rerun the app when the
+  theme changes.
+- Clear states for "no study yet", "analyzing" (grey placeholder blocks), errors and "model not
+  ready". The upload box now states the real 10 MB limit.
+
+The colors, fonts (Geist and Geist Mono) and corner radius live in `.streamlit/config.toml`.
+The custom pieces (verdict card, threshold scale, highlighted words, report layout) are built in
+`ui/theme.py`. The Docker UI image copies both files and the three sample studies.
+
+One bug came up while testing locally: adding the `ui/` folder to Python's import path made
+`ui/app.py` hide the project's `app` package, which the in-process model service needs. The
+theme file is now loaded straight from its path, and a test checks that `ui/` stays off the
+import path.
+
+We checked the redesign with the real model in both themes and at phone width. The three sample
+cases gave the same scores as before: 16.0% (Normal), 90.5% (Abnormal) and 53.2% (Abnormal).
 
 ## Retraining it yourself
 

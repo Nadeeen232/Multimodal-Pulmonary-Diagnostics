@@ -1,8 +1,10 @@
 FROM python:3.12-slim
 WORKDIR /ui
-COPY requirements.txt .
+COPY ui/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY app.py .
+COPY ui/app.py ui/theme.py ./
+COPY .streamlit ./.streamlit
+COPY demo_images/team29 ./demo_images/team29
 RUN useradd --create-home service
 USER service
 ENV API_URL=http://api:8080

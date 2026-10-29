@@ -2,20 +2,44 @@
 
 The service is reached over HTTP (API_URL), or run in-process when
 PULMONARY_IN_PROCESS=1 for single-container hosts such as Streamlit Community Cloud.
+Styling lives in theme.py and .streamlit/config.toml.
 """
 
 import base64
+import csv
 import hashlib
-import html
+import importlib.util
+import json
 import os
+from pathlib import Path
 
 import requests
 import streamlit as st
 
-st.set_page_config(page_title="Pulmonary Review Assistant", page_icon="🫁", layout="wide")
-st.title("Pulmonary Review Assistant")
-st.caption("Samsung Innovation Campus · Multimodal research prototype")
-st.warning("Clinician verification is required. Model outputs are not clinically validated.")
+HERE = Path(__file__).resolve().parent
+
+
+def _load_theme():
+    # Loaded by path: adding ui/ to sys.path would let this app.py shadow the app package.
+    spec = importlib.util.spec_from_file_location("pulmonary_ui_theme", HERE / "theme.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+theme = _load_theme()
+
+MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+DISCLAIMER = "Clinician verification is required. Model outputs are not clinically validated."
+SAMPLE_LABELS = {
+    "normal": "Normal case",
+    "abnormal": "Abnormal case",
+    "false_prediction": "Known miss",
+}
+
+st.set_page_config(
+    page_title="Pulmonary Review Assistant", page_icon=":material/pulmonology:", layout="wide"
+)
 
 
 class HttpService:
@@ -42,67 +66,153 @@ service = (
     else HttpService(os.environ.get("API_URL", "http://127.0.0.1:8080"))
 )
 
-with st.sidebar:
-    st.subheader("Analysis settings")
-    show_explanation = st.checkbox("Include explanations", value=True)
-    st.caption("The operating threshold is fixed by validation analysis.")
+
+def service_state():
     try:
         response = service.get("/health")
         if response.status_code >= 400:
             raise ValueError("Health check failed")
         health = response.json()
         if health["status"] == "ready":
-            st.success("Model ready")
-            st.caption(health["model_version"])
-        else:
-            st.info("The model is not ready. Training artifacts are required.")
-    except (requests.RequestException, ValueError):
-        st.error("The prediction service is unavailable.")
+            return "ready", health["model_version"]
+        return "loading", None
+    except (requests.RequestException, ValueError, KeyError):
+        return "down", None
 
-left, right = st.columns([1, 1])
+
+@st.cache_data
+def samples():
+    """Held-out test studies shipped with the repo (repo checkout or the UI image)."""
+    for root in (HERE.parent / "demo_images", HERE / "demo_images"):
+        table = root / "team29" / "demo_cases.csv"
+        if table.is_file():
+            with table.open(encoding="utf-8") as handle:
+                rows = list(csv.DictReader(handle))
+            return [
+                {
+                    "key": row["category"],
+                    "label": SAMPLE_LABELS.get(row["category"], row["category"]),
+                    "uid": row["uid"],
+                    "weak_label": row["weak_label"],
+                    "name": Path(row["filename"]).name,
+                    "bytes": (root / row["filename"]).read_bytes(),
+                    "indication": row["indication"],
+                    "comparison": row["comparison"],
+                }
+                for row in rows
+                if (root / row["filename"]).is_file()
+            ]
+    return []
+
+
+def load_sample(sample):
+    st.session_state.update(
+        sample=sample["key"],
+        indication=sample["indication"],
+        comparison=sample["comparison"],
+        upload_nonce=st.session_state.get("upload_nonce", 0) + 1,  # clears the uploader
+    )
+
+
+def clear_sample():
+    st.session_state["sample"] = None
+
+
+state, model_version = service_state()
+theme_type = getattr(getattr(st.context, "theme", None), "type", None)
+st.markdown(theme.css(theme_type), unsafe_allow_html=True)
+st.html(theme.THEME_SCRIPT, unsafe_allow_javascript=True)
+st.markdown(theme.header(state, model_version), unsafe_allow_html=True)
+
+left, right = st.columns([0.45, 0.55], gap="large")
 with left:
-    st.subheader("Radiograph and clinical context")
+    st.markdown('<div class="pr-title">Study</div>', unsafe_allow_html=True)
     upload = st.file_uploader(
         "Chest radiograph",
         type=["png", "jpg", "jpeg"],
-        help="PNG or JPEG, up to 10 MiB. DICOM is not supported.",
+        help="PNG or JPEG, up to 10 MB. DICOM is not supported.",
+        key=f"upload-{st.session_state.get('upload_nonce', 0)}",
+        on_change=clear_sample,
     )
+    cases = samples()
+    if cases:
+        st.markdown(
+            '<div class="pr-hint">No X-ray at hand? Load a held-out test case:</div>',
+            unsafe_allow_html=True,
+        )
+        for column, case in zip(st.columns(len(cases)), cases, strict=True):
+            column.button(
+                case["label"],
+                key=f"sample-{case['key']}",
+                on_click=load_sample,
+                args=(case,),
+                width="stretch",
+            )
+
+    sample = next((c for c in cases if c["key"] == st.session_state.get("sample")), None)
     if upload is not None:
-        st.image(upload, caption="Uploaded image", width="stretch")
+        image = {"name": upload.name, "bytes": upload.getvalue(), "type": upload.type}
+    elif sample is not None:
+        image = {"name": sample["name"], "bytes": sample["bytes"], "type": "image/png"}
+        st.caption(
+            f"Test study {sample['uid']}, labeled {sample['weak_label']} in the dataset. "
+            "The model never saw it during training."
+        )
+    else:
+        image = None
+    if image is not None:
+        st.image(image["bytes"], width="stretch")
+
     indication = st.text_area(
         "Clinical indication",
-        placeholder="Enter the associated pre-examination clinical indication…",
+        key="indication",
+        placeholder="For example: shortness of breath for three days",
         max_chars=4000,
-        height=140,
+        height=110,
     )
-    comparison = st.text_area(
-        "Comparison context (optional)",
-        max_chars=4000,
-        help="Used only if the deployed model was trained with this field.",
+    with st.expander(
+        "Add comparison (optional)", expanded=bool(st.session_state.get("comparison"))
+    ):
+        comparison = st.text_area(
+            "Comparison context",
+            key="comparison",
+            max_chars=4000,
+            help="Used only if the deployed model was trained with this field.",
+        )
+    show_explanation = st.toggle(
+        "Include explanations",
+        value=True,
+        help="Grad-CAM heatmap and text influence. Adds a few seconds.",
     )
     analyze = st.button(
-        "Analyze radiograph and text",
+        "Analyze",
         type="primary",
-        disabled=upload is None or not indication.strip(),
+        disabled=image is None or not indication.strip() or state != "ready",
         width="stretch",
     )
 
 fingerprint = hashlib.sha256(
-    (upload.getvalue() if upload else b"") + indication.encode() + b"\x00" + comparison.encode()
+    (image["bytes"] if image else b"") + indication.encode() + b"\x00" + comparison.encode()
 ).hexdigest()
 if st.session_state.get("analysis_input") != fingerprint:
     st.session_state.pop("analysis", None)
+    st.session_state.pop("analysis_error", None)
 
-if analyze:
-    # Remove an old result before a new request so an error cannot leave a stale prediction.
-    st.session_state.pop("analysis", None)
-    with st.spinner("Analyzing both modalities…"):
+with right:
+    st.markdown('<div class="pr-title">Result</div>', unsafe_allow_html=True)
+    if analyze:
+        # Remove an old result before a new request so an error cannot leave a stale prediction.
+        st.session_state.pop("analysis", None)
+        st.session_state.pop("analysis_error", None)
+        st.session_state["analysis_input"] = fingerprint
+        pending = st.empty()
+        pending.markdown(theme.skeleton(), unsafe_allow_html=True)
         try:
-            if upload.size > 10 * 1024 * 1024:
+            if len(image["bytes"]) > MAX_UPLOAD_BYTES:
                 raise ValueError("The image must be no larger than 10 MiB.")
             response = service.post(
                 "/explain" if show_explanation else "/predict",
-                files={"image": (upload.name, upload.getvalue(), upload.type)},
+                files={"image": (image["name"], image["bytes"], image["type"])},
                 data={"indication": indication, "comparison": comparison},
             )
             if response.status_code >= 400:
@@ -110,86 +220,113 @@ if analyze:
                     detail = response.json().get("detail", "Request failed")
                 except ValueError:
                     detail = "Request failed"
-                st.error(f"Service returned {response.status_code}: {detail}")
+                st.session_state["analysis_error"] = (
+                    f"Service returned {response.status_code}: {detail}"
+                )
             else:
                 st.session_state["analysis"] = response.json()
-                st.session_state["analysis_input"] = fingerprint
         except requests.Timeout:
-            st.error("Analysis timed out. Try again when the service is available.")
+            st.session_state["analysis_error"] = (
+                "Analysis timed out. Try again when the service is available."
+            )
         except (requests.RequestException, ValueError) as exc:
-            st.error(str(exc))
+            st.session_state["analysis_error"] = str(exc)
+        pending.empty()
 
-with right:
-    st.subheader("Review result")
     result = st.session_state.get("analysis")
-    if result:
+    failure = st.session_state.get("analysis_error")
+    if failure:
+        st.markdown(theme.error(failure), unsafe_allow_html=True)
+    elif result:
         prediction = result.get("prediction", result)
-        st.metric("Abnormality model score", f"{prediction['probability']:.1%}")
-        st.progress(prediction["probability"])
+        st.markdown(theme.verdict(prediction, result["predicted_class"]), unsafe_allow_html=True)
         st.caption(
-            "Uncalibrated score against weak annotation labels; not the probability of disease."
-        )
-        st.write(f"**Predicted Class:** {result['predicted_class']}")
-        st.info(
-            f"{prediction['priority_tier'].replace('_', ' ').title()} — {prediction['priority_reason']}"
-        )
-        st.caption(
-            f"Decision threshold: {prediction['threshold']:.3f} · {prediction['model_version']}"
+            "Uncalibrated score against weak annotation labels, not the probability of disease. "
+            f"Model {prediction['model_version']}."
         )
         if "gradcam_base64" in result:
-            st.image(
-                base64.b64decode(result["gradcam_base64"]),
-                caption="Grad-CAM of the deployed multimodal score",
-                width="stretch",
+            heatmap = base64.b64decode(result["gradcam_base64"])
+            view = st.segmented_control(
+                "Image view",
+                ["X-ray", "Heatmap", "Side by side"],
+                default="Heatmap",
+                key="viewer",
+                label_visibility="collapsed",
             )
-            st.write("**Text contributions**")
+            if view == "X-ray":
+                st.image(image["bytes"], width="stretch")
+            elif view == "Side by side":
+                original, overlay = st.columns(2)
+                original.image(image["bytes"], caption="X-ray", width="stretch")
+                overlay.image(heatmap, caption="Grad-CAM", width="stretch")
+            else:
+                st.image(heatmap, caption="Grad-CAM of the ResNet50 branch", width="stretch")
+
+            st.markdown('<div class="pr-title">Text influence</div>', unsafe_allow_html=True)
             for field, raw in [("indication", indication), ("comparison", comparison)]:
-                highlights = sorted(
-                    (item for item in result["text_highlights"] if item["field"] == field),
-                    key=lambda item: item["start"],
-                )
-                if not highlights:
-                    continue
-                parts, cursor = [], 0
-                for item in highlights:
-                    parts.append(html.escape(raw[cursor : item["start"]]))
-                    color = "#fee2e2" if item["contribution"] > 0 else "#dbeafe"
-                    parts.append(
-                        f'<span style="background:{color};color:#111827;padding:2px 3px;border-radius:3px">{html.escape(raw[item["start"] : item["end"]])}</span>'
-                    )
-                    cursor = item["end"]
-                parts.append(html.escape(raw[cursor:]))
-                st.markdown("".join(parts), unsafe_allow_html=True)
-            st.caption(
-                "Red: presence raises the score. Blue: presence lowers or does not change it. Contributions are context-dependent."
-            )
-            st.dataframe(result["text_highlights"][:15], hide_index=True, width="stretch")
-            st.caption(result["method"])
-            if result["text_tokens_truncated"]:
-                st.caption("Text attribution was limited to the first 40 tokens.")
-        st.subheader("Clinical report")
-        st.text_area(
-            "Rule-based report for clinician review",
-            value=result["generated_report"],
-            height=340,
-            disabled=True,
-        )
-        st.download_button(
-            "Download report text",
+                highlights = [item for item in result["text_highlights"] if item["field"] == field]
+                if highlights:
+                    st.markdown(theme.chips(raw, highlights), unsafe_allow_html=True)
+            st.markdown(theme.LEGEND, unsafe_allow_html=True)
+            with st.expander("Token details"):
+                st.dataframe(result["text_highlights"][:15], hide_index=True, width="stretch")
+                st.caption(result["method"])
+                if result["text_tokens_truncated"]:
+                    st.caption("Text attribution was limited to the first 40 tokens.")
+
+        st.markdown('<div class="pr-title">Clinical report</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown(theme.report(result["generated_report"]), unsafe_allow_html=True)
+        save_text, save_json = st.columns(2)
+        save_text.download_button(
+            "Download report",
             data=result["generated_report"],
             file_name="clinical_report.txt",
             mime="text/plain",
+            width="stretch",
         )
-        st.download_button(
-            "Download result JSON",
-            data=__import__("json").dumps(result, indent=2),
+        save_json.download_button(
+            "Download JSON",
+            data=json.dumps(result, indent=2),
             file_name="analysis.json",
             mime="application/json",
+            width="stretch",
+        )
+        with st.expander("Report as plain text"):
+            st.code(result["generated_report"], language=None, wrap_lines=True)
+    elif state == "ready":
+        st.markdown(
+            theme.empty(
+                "No study analyzed yet",
+                "Add a chest X-ray and its clinical indication, then select Analyze.",
+            ),
+            unsafe_allow_html=True,
+        )
+    elif state == "loading":
+        st.markdown(
+            theme.empty(
+                "The model is not ready",
+                "The model bundle has not loaded. Training artifacts are required.",
+                warn=True,
+            ),
+            unsafe_allow_html=True,
         )
     else:
-        st.info("Upload a radiograph and enter its clinical indication to begin.")
+        st.markdown(
+            theme.empty(
+                "The prediction service is unavailable",
+                "The app cannot reach the model service right now. Try again shortly.",
+                warn=True,
+            ),
+            unsafe_allow_html=True,
+        )
 
-with st.expander("How to interpret this prototype"):
+st.markdown(theme.footer(), unsafe_allow_html=True)
+st.caption(DISCLAIMER)
+with st.expander("How to read these results"):
     st.write(
-        "The model learns a proxy abnormality task from Indiana structured annotations. The indication is not a full admission note. Image heatmaps and text score changes describe model sensitivity; they do not confirm diagnoses. Review priority is an illustrative queue ordering based on validation assumptions. A lower score does not rule out disease."
+        "The model learns a proxy abnormality task from Indiana structured annotations. The "
+        "indication is not a full admission note. Image heatmaps and text score changes describe "
+        "model sensitivity; they do not confirm diagnoses. Review priority is an illustrative "
+        "queue ordering based on validation assumptions. A lower score does not rule out disease."
     )

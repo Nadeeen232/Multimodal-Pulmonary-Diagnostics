@@ -12,7 +12,9 @@ services:
       OPENBLAS_NUM_THREADS: "1"
     restart: unless-stopped
   ui:
-    build: ./ui
+    build:
+      context: .
+      dockerfile: ui/Dockerfile
     ports:
       - "127.0.0.1:8501:8501"
     environment:
