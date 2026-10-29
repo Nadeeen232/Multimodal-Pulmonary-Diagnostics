@@ -49,3 +49,6 @@ reports/*_process.json
 # Removed duplicate review; use the consolidated technical evidence report.
 /docs/team_model_review.md
 /docs/team_model_review.docx
+
+# Presentation guide kept outside the repository; never commit a copy.
+guide.how.md
