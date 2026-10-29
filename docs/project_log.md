@@ -199,7 +199,7 @@ What changed on screen:
 - New palette: warm off-white or graphite backgrounds, white or dark cards with 20px corners, lime
   for the one main action (Analyze Study) and a soft lavender card for the text influence. Normal
   and Abnormal keep their own green and amber, separate from the decoration colors.
-- The result is laid out as cards of different sizes: a graphite card with the verdict and a large
+- The result is laid out as cards of different sizes: a card with the verdict and a large
   score, a card showing the score against the 35% threshold, the radiograph viewer (X-ray, heatmap,
   side by side), the text influence and the report.
 - The text influence now shows each word with its effect on the score in percentage points, for
@@ -220,6 +220,10 @@ For a short while the study card and the text influence card stayed pinned on sc
 results scrolled. In a short browser window that squashed the clinical indication box into a thin
 strip with its own scroll arrows, so we removed the pinning: the whole page now scrolls as one, and
 a check at four window sizes finds no element with its own scrollbar.
+
+In the light theme the verdict card and the frames behind the X-rays were first dark graphite,
+which looked like black boxes on a light page. They now follow the theme: white card and light
+grey frames in light mode, dark in dark mode.
 
 When Analyze Study is off, a line under it now says what is missing (an X-ray, the clinical
 indication, or a model that has not loaded yet). It also mentions that Streamlit only takes typed

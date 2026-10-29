@@ -20,10 +20,11 @@ TOKENS = {
         "accent-hover": "#CAE95A",
         "on-accent": "#222322",
         "focus": "#222323",
-        "ink": "#222323",
-        "ink-border": "#222323",
-        "on-ink": "#F4F2ED",
-        "ink-muted": "#A6AAA5",
+        "ink": "#FFFFFF",
+        "ink-border": "#E3E3DE",
+        "on-ink": "#222322",
+        "ink-muted": "#686B68",
+        "ink-rule": "#E3E3DE",
         "lav-soft": "#F1EDFB",
         "lav-border": "#DED5F4",
         "normal": "#1E7A46",
@@ -34,7 +35,7 @@ TOKENS = {
         "abnormal-zone": "rgba(163, 82, 10, 0.24)",
         "danger": "#B42318",
         "danger-soft": "rgba(180, 35, 24, 0.07)",
-        "frame": "#161718",
+        "frame": "#E6E5DF",
         "shadow": "0 1px 2px rgba(34, 35, 34, 0.04), 0 10px 30px -12px rgba(34, 35, 34, 0.10)",
         "logo-ring": "transparent",
     },
@@ -54,6 +55,7 @@ TOKENS = {
         "ink-border": "#393B39",
         "on-ink": "#F4F2ED",
         "ink-muted": "#A6AAA5",
+        "ink-rule": "rgba(244, 242, 237, 0.12)",
         "lav-soft": "#2A2833",
         "lav-border": "#423D55",
         "normal": "#86D9A2",
@@ -69,9 +71,6 @@ TOKENS = {
         "logo-ring": "#393B39",
     },
 }
-
-# The verdict sits on the graphite panel in both themes, so its colors are fixed.
-INK_STATUS = {"normal": "#86D9A2", "abnormal": "#F2B45A"}
 
 MONO = '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace'
 
@@ -165,9 +164,9 @@ button:focus-visible, .pr-copy:focus-visible { outline: 2px solid var(--pr-focus
 .pr-frame {
   height: 13rem; border-radius: 14px; background: var(--pr-frame); display: flex;
   flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem;
-  color: #A6AAA5; font-size: 0.85rem; text-align: center; padding: 1rem;
+  color: var(--pr-text); font-size: 0.85rem; text-align: center; padding: 1rem;
 }
-.pr-frame span { font-family: MONO; font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7D817C; }
+.pr-frame span { font-family: MONO; font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--pr-text); opacity: 0.75; }
 .pr-caption { font-size: 0.8rem; color: var(--pr-muted); margin-top: -0.35rem; }
 
 /* Assessment */
@@ -175,7 +174,7 @@ button:focus-visible, .pr-copy:focus-visible { outline: 2px solid var(--pr-focus
 .pr-score {
   background: var(--pr-ink); color: var(--pr-on-ink); border: 1px solid var(--pr-ink-border);
   border-radius: 20px; padding: 1.35rem 1.45rem 1.4rem; display: flex; flex-direction: column;
-  justify-content: space-between; gap: 1.25rem; min-height: 15rem;
+  justify-content: space-between; gap: 1.25rem; min-height: 15rem; box-shadow: var(--pr-shadow);
 }
 .pr-score .pr-eyebrow { color: var(--pr-ink-muted); }
 .pr-score-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
@@ -183,6 +182,8 @@ button:focus-visible, .pr-copy:focus-visible { outline: 2px solid var(--pr-focus
   display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.32rem 0.8rem;
   border-radius: 999px; font-weight: 600; font-size: 0.9rem;
 }
+.pr-pill.is-normal { color: var(--pr-normal); background: var(--pr-normal-soft); }
+.pr-pill.is-abnormal { color: var(--pr-abnormal); background: var(--pr-abnormal-soft); }
 .pr-pill::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
 .pr-big {
   font-family: MONO; font-weight: 500; font-size: clamp(3.1rem, 5.2vw, 4.4rem);
@@ -192,7 +193,7 @@ button:focus-visible, .pr-copy:focus-visible { outline: 2px solid var(--pr-focus
 .pr-big small { font-size: 0.5em; letter-spacing: -0.02em; margin-left: 0.08em; color: var(--pr-ink-muted); }
 .pr-score-label { margin-top: 0.55rem; font-size: 0.85rem; color: var(--pr-ink-muted); }
 .pr-score-rel {
-  margin-top: 0.9rem; padding-top: 0.75rem; border-top: 1px solid rgba(244, 242, 237, 0.12);
+  margin-top: 0.9rem; padding-top: 0.75rem; border-top: 1px solid var(--pr-ink-rule);
   font-family: MONO; font-size: 0.74rem; color: var(--pr-on-ink);
 }
 .pr-thr {
@@ -472,14 +473,13 @@ def assessment(prediction, predicted_class):
     threshold = min(max(float(prediction["threshold"]), 0.0), 1.0)
     kind = "abnormal" if predicted_class == "Abnormal" else "normal"
     tier = prediction["priority_tier"].replace("_", " ").capitalize()
-    color = INK_STATUS[kind]
     whole, tenth = f"{score * 100:.1f}".split(".")
     relation = "At or above" if score >= threshold else "Below"
     return (
         '<div class="pr-assess pr-reveal">'
         '<div class="pr-score"><div class="pr-score-top">'
         '<span class="pr-eyebrow">Model assessment</span>'
-        f'<span class="pr-pill" style="color:{color};background:{color}24">{esc(predicted_class)}</span>'
+        f'<span class="pr-pill is-{kind}">{esc(predicted_class)}</span>'
         f'</div><div><div class="pr-big">{whole}<span class="pt">.</span>{tenth}<small>%</small></div>'
         '<div class="pr-score-label">Abnormality score, uncalibrated</div>'
         f'<div class="pr-score-rel">{relation} the {percent(threshold)} threshold</div></div></div>'
