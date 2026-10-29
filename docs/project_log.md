@@ -1,4 +1,4 @@
-# Project log: report notebook, deployment, model retraining and the new UI
+# Project log: report notebook, deployment, model retraining, the new UI and README
 
 This file explains what changed in the repository after the original SIC submission, why it
 changed, and how you can repeat each step yourself. It covers four pieces of work done in
@@ -168,6 +168,25 @@ import path.
 
 We checked the redesign with the real model in both themes and at phone width. The three sample
 cases gave the same scores as before: 16.0% (Normal), 90.5% (Abnormal) and 53.2% (Abnormal).
+
+## 5. Docker check and a new README
+
+We ran the full Docker setup (`docker compose up`) for the first time since the retrain. Both
+containers built and reported healthy, `/ready` returned `0.2.1-team29-47e281fc`, and the UI
+container reached the API over the internal network. `scripts/verify_docker_stack.py` needed
+two fixes to pass:
+
+- It compared each score to the value saved in `demo_images/demo_cases.csv`, which was recorded
+  with the old `0.2.0` model. It now checks the exact score only when the model versions match.
+  With a different model it still checks that the predicted class is the same.
+- Its UI checks looked for the old sidebar and text area. They now look for the new header
+  badge, the report block, the disabled Analyze button and the three sample buttons.
+
+The README was rewritten from scratch. It now covers the retrained model, the new UI, Streamlit
+Cloud and Docker, and has three Mermaid diagrams: how one prediction is made, how the services
+connect, and the training pipeline. The screenshots in `docs/images/` were taken from the
+Docker build with the deployed model. We also set `toolbarMode = "minimal"` in
+`.streamlit/config.toml`, which hides Streamlit's "Deploy" button.
 
 ## Retraining it yourself
 

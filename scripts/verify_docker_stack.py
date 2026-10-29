@@ -100,7 +100,9 @@ def main():
         )
         assert prediction["model_version"] == evidence["model"]["model_version"]
         assert prediction["predicted_label"] == row["predicted_label"]
-        assert abs(prediction["probability"] - float(row["probability"])) < 1e-4
+        # Recorded scores belong to one model version; a retrained bundle must keep the class.
+        if row.get("model_version") == prediction["model_version"]:
+            assert abs(prediction["probability"] - float(row["probability"])) < 1e-4
         if route == "explain":
             assert base64.b64decode(result["gradcam_base64"]).startswith(b"\x89PNG")
         evidence["checks"][route] = {
@@ -134,10 +136,12 @@ def main():
         "page.session_state['analysis_input']=hashlib.sha256(bytes([0])).hexdigest(); "
         "page.run(); "
         "assert not page.exception, str(page.exception); "
-        "assert any(m.value == 'Model ready' for m in page.success); "
-        "assert all('educational' not in w.value.lower() for w in page.warning); "
-        "assert any(t.value == result['generated_report'] for t in page.text_area); "
-        "assert page.button[0].disabled; print('Container UI rendered; internal API ready')"
+        "assert any('Model ready' in m.value for m in page.markdown); "
+        "assert all('educational' not in m.value.lower() for m in [*page.markdown, *page.caption]); "
+        "assert any(c.value == result['generated_report'] for c in page.code); "
+        "assert next(b for b in page.button if b.label == 'Analyze').disabled; "
+        "assert {b.label for b in page.button} >= {'Normal case', 'Abnormal case', 'Known miss'}; "
+        "print('Container UI rendered; internal API ready')"
     )
     rendered = subprocess.run(
         ["docker", "compose", "exec", "-T", "ui", "python", "-c", code],

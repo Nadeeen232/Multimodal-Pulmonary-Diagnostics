@@ -7,6 +7,9 @@ maxUploadSize = 10
 [browser]
 gatherUsageStats = false
 
+[client]
+toolbarMode = "minimal"
+
 [theme]
 font = "Geist:https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap, sans-serif"
 codeFont = "Geist Mono:https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap, monospace"
