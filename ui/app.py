@@ -298,6 +298,27 @@ with left, st.container(key="pr-study"):
         disabled=image is None or not indication.strip() or state != "ready",
         width="stretch",
     )
+    # Say why the button is off; Streamlit only applies typed text on Ctrl+Enter or blur.
+    missing = [
+        need
+        for need, absent in [
+            ("a chest X-ray (upload one or pick a sample case)", image is None),
+            ("the clinical indication", not indication.strip()),
+        ]
+        if absent
+    ]
+    if state != "ready":
+        st.markdown(
+            theme.caption("Analyze Study turns on when the model is ready."), unsafe_allow_html=True
+        )
+    elif missing:
+        st.markdown(
+            theme.caption(
+                f"To analyze, add {' and '.join(missing)}. After typing, press Ctrl+Enter "
+                "or click outside the box."
+            ),
+            unsafe_allow_html=True,
+        )
 
 fingerprint = hashlib.sha256(
     (image["bytes"] if image else b"") + indication.encode() + b"\x00" + comparison.encode()

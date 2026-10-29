@@ -221,6 +221,10 @@ results scrolled. In a short browser window that squashed the clinical indicatio
 strip with its own scroll arrows, so we removed the pinning: the whole page now scrolls as one, and
 a check at four window sizes finds no element with its own scrollbar.
 
+When Analyze Study is off, a line under it now says what is missing (an X-ray, the clinical
+indication, or a model that has not loaded yet). It also mentions that Streamlit only takes typed
+text after Ctrl+Enter or a click outside the box, which is easy to miss.
+
 One bug turned up while testing: uploading a file that is not a real image crashed the whole page,
 in the old UI too, because the preview could not read it. The preview now says "Preview
 unavailable", and Analyze Study shows the service's own message ("Unreadable or unsupported

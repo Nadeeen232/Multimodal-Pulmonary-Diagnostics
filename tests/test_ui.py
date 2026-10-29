@@ -44,6 +44,7 @@ def test_sample_case_fills_the_study(monkeypatch):
     assert any("Test study 2348" in m.value for m in page.markdown)
     # The service is unreachable in this test, so Analyze stays disabled.
     assert analyze_button(page).disabled
+    assert any("when the model is ready" in m.value for m in page.markdown)
 
 
 def test_result_renders_verdict_heatmap_tokens_and_report(monkeypatch):
@@ -95,3 +96,22 @@ def test_header_uses_the_app_icon(monkeypatch):
     monkeypatch.setenv("API_URL", "http://127.0.0.1:1")
     page = AppTest.from_file(APP, default_timeout=20).run()
     assert any('class="pr-logo" src="data:image/png;base64,' in m.value for m in page.markdown)
+
+
+def test_hint_says_what_is_missing(monkeypatch):
+    from unittest.mock import patch
+
+    monkeypatch.setenv("API_URL", "http://127.0.0.1:1")
+    ready = type(
+        "R",
+        (),
+        {"status_code": 200, "json": lambda self: {"status": "ready", "model_version": "v"}},
+    )()
+    with patch("requests.get", return_value=ready):
+        page = AppTest.from_file(APP, default_timeout=20).run()
+        hint = " ".join(m.value for m in page.markdown)
+        assert "a chest X-ray" in hint and "the clinical indication" in hint
+        page = next(b for b in page.button if b.label == "Normal").click().run()
+        hint = " ".join(m.value for m in page.markdown)
+        assert "To analyze" not in hint
+        assert not analyze_button(page).disabled
