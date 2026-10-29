@@ -139,8 +139,8 @@ def main():
         "assert any('Model ready' in m.value for m in page.markdown); "
         "assert all('educational' not in m.value.lower() for m in [*page.markdown, *page.caption]); "
         "assert any(c.value == result['generated_report'] for c in page.code); "
-        "assert next(b for b in page.button if b.label == 'Analyze').disabled; "
-        "assert {b.label for b in page.button} >= {'Normal case', 'Abnormal case', 'Known miss'}; "
+        "assert next(b for b in page.button if b.label == 'Analyze Study').disabled; "
+        "assert {b.label for b in page.button} >= {'Normal', 'Abnormal', 'Known error'}; "
         "print('Container UI rendered; internal API ready')"
     )
     rendered = subprocess.run(

@@ -1,200 +1,350 @@
 """Visual layer for the Streamlit UI: color tokens, one CSS block and small HTML helpers.
 
 Colors mirror .streamlit/config.toml ([theme.light] / [theme.dark]) so custom blocks match
-Streamlit's own widgets. Every helper escapes the text it receives.
+Streamlit's own widgets. Cards are keyed containers (st.container(key="pr-...")), which
+Streamlit exposes as stable `st-key-<key>` classes. Every helper escapes the text it receives.
 """
 
 import html
 
 TOKENS = {
     "light": {
-        "bg": "#F6F7F9",
-        "surface": "#FCFCFD",
-        "sunken": "#EEF1F4",
-        "text": "#111827",
-        "muted": "#5B6472",
-        "border": "#E3E7EC",
-        "accent": "#0F766E",
-        "on-accent": "#FFFFFF",
-        "normal": "#15803D",
-        "normal-soft": "rgba(21, 128, 61, 0.10)",
-        "abnormal": "#B45309",
-        "abnormal-soft": "rgba(180, 83, 9, 0.10)",
-        "up-soft": "rgba(180, 83, 9, 0.14)",
-        "down-soft": "rgba(15, 118, 110, 0.12)",
-        "frame": "#0C1014",
-        "shadow": "0 1px 2px rgba(17, 24, 39, 0.05), 0 8px 24px rgba(17, 24, 39, 0.05)",
+        "bg": "#F4F3EF",
+        "card": "#FFFFFF",
+        "sunken": "#EEEDE8",
+        "text": "#222322",
+        "muted": "#686B68",
+        "border": "#E3E3DE",
+        "border-strong": "#CFCFC8",
+        "accent": "#D6F36A",
+        "accent-hover": "#CAE95A",
+        "on-accent": "#222322",
+        "focus": "#222323",
+        "ink": "#222323",
+        "ink-border": "#222323",
+        "on-ink": "#F4F2ED",
+        "ink-muted": "#A6AAA5",
+        "lav-soft": "#F1EDFB",
+        "lav-border": "#DED5F4",
+        "normal": "#1E7A46",
+        "normal-soft": "rgba(30, 122, 70, 0.10)",
+        "abnormal": "#A3520A",
+        "abnormal-soft": "rgba(163, 82, 10, 0.10)",
+        "normal-zone": "rgba(30, 122, 70, 0.24)",
+        "abnormal-zone": "rgba(163, 82, 10, 0.24)",
+        "danger": "#B42318",
+        "danger-soft": "rgba(180, 35, 24, 0.07)",
+        "frame": "#161718",
+        "shadow": "0 1px 2px rgba(34, 35, 34, 0.04), 0 10px 30px -12px rgba(34, 35, 34, 0.10)",
     },
     "dark": {
-        "bg": "#0C1014",
-        "surface": "#11161C",
-        "sunken": "#141A21",
-        "text": "#E6EAF0",
-        "muted": "#9AA4B2",
-        "border": "#232B35",
-        "accent": "#2DD4BF",
-        "on-accent": "#04201D",
-        "normal": "#4ADE80",
-        "normal-soft": "rgba(74, 222, 128, 0.12)",
-        "abnormal": "#F59E0B",
-        "abnormal-soft": "rgba(245, 158, 11, 0.14)",
-        "up-soft": "rgba(245, 158, 11, 0.18)",
-        "down-soft": "rgba(45, 212, 191, 0.16)",
-        "frame": "#05080B",
-        "shadow": "0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.25)",
+        "bg": "#171819",
+        "card": "#242526",
+        "sunken": "#2B2D2C",
+        "text": "#F4F2ED",
+        "muted": "#A6AAA5",
+        "border": "#393B39",
+        "border-strong": "#4A4D4A",
+        "accent": "#D6F36A",
+        "accent-hover": "#E2F98A",
+        "on-accent": "#1B1C1A",
+        "focus": "#D6F36A",
+        "ink": "#101111",
+        "ink-border": "#393B39",
+        "on-ink": "#F4F2ED",
+        "ink-muted": "#A6AAA5",
+        "lav-soft": "#2A2833",
+        "lav-border": "#423D55",
+        "normal": "#86D9A2",
+        "normal-soft": "rgba(134, 217, 162, 0.13)",
+        "abnormal": "#F2B45A",
+        "abnormal-soft": "rgba(242, 180, 90, 0.14)",
+        "normal-zone": "rgba(134, 217, 162, 0.30)",
+        "abnormal-zone": "rgba(242, 180, 90, 0.30)",
+        "danger": "#F97066",
+        "danger-soft": "rgba(249, 112, 102, 0.10)",
+        "frame": "#0E0F0F",
+        "shadow": "0 1px 2px rgba(0, 0, 0, 0.35)",
     },
 }
 
+# The verdict sits on the graphite panel in both themes, so its colors are fixed.
+INK_STATUS = {"normal": "#86D9A2", "abnormal": "#F2B45A"}
+
+MONO = '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace'
+
 CSS = """
-%(vars)s
+/*VARS*/
 [data-testid="stHeader"] { background: transparent; }
-/* The style and theme-script blocks render nothing; drop the gap they leave. */
+[data-testid="stHeaderActionElements"] { display: none; }
+/* Markdown blocks carry -1rem to absorb a trailing <p> margin; the pr- blocks have none. */
+[data-testid="stMarkdownContainer"]:has(> [class^="pr-"]) { margin-bottom: 0; }
+/* The style and script blocks render nothing; drop the gap they leave. */
 [data-testid="stElementContainer"]:has(> [data-testid="stMarkdown"] style),
 [data-testid="stElementContainer"]:has(script) { display: none; }
 [data-testid="stMainBlockContainer"], .block-container {
-  max-width: 1280px; padding-top: 1.5rem; padding-bottom: 3rem;
+  max-width: 1380px; padding: 3.25rem 2rem 3rem;
 }
-h1, h2, h3 { letter-spacing: -0.01em; }
 
-.pr-header {
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  flex-wrap: wrap; padding-bottom: 1rem; margin-bottom: 0.5rem;
-  border-bottom: 1px solid var(--pr-border);
+/* Header */
+.pr-top {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem;
+  flex-wrap: wrap; padding-bottom: 0.5rem;
 }
-.pr-brand { display: flex; flex-direction: column; gap: 0.15rem; }
-.pr-brand strong { font-size: 1.35rem; font-weight: 600; color: var(--pr-text); }
-.pr-brand span { font-size: 0.875rem; color: var(--pr-muted); }
+.pr-brand { display: flex; align-items: center; gap: 1.1rem; }
+.pr-mark {
+  flex: none; width: 3.25rem; height: 3.25rem; border-radius: 16px; background: var(--pr-ink);
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  border: 1px solid var(--pr-ink-border);
+}
+.pr-mark i { width: 0.62rem; height: 1.45rem; background: var(--pr-accent); }
+.pr-mark i:first-child { border-radius: 70% 25% 35% 60%; }
+.pr-mark i:last-child { border-radius: 25% 70% 60% 35%; }
+.pr-eyebrow {
+  font-family: MONO; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.09em;
+  text-transform: uppercase; color: var(--pr-muted);
+}
+.pr-top h1 {
+  margin: 0.2rem 0 0.15rem; padding: 0; font-size: clamp(2rem, 3.2vw, 2.7rem); font-weight: 600;
+  letter-spacing: -0.035em; line-height: 1.05; color: var(--pr-text);
+}
+.pr-top p { margin: 0; font-size: 0.95rem; color: var(--pr-muted); }
 .pr-badge {
-  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.75rem;
-  border: 1px solid var(--pr-border); border-radius: 999px; background: var(--pr-surface);
-  font-size: 0.8125rem; color: var(--pr-text);
+  display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.85rem;
+  border: 1px solid var(--pr-border); border-radius: 999px; background: var(--pr-card);
+  font-size: 0.82rem; font-weight: 500; color: var(--pr-text);
 }
-.pr-badge .pr-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%%; background: var(--pr-muted); }
-.pr-badge.is-ready .pr-dot { background: var(--pr-normal); }
-.pr-badge.is-down .pr-dot { background: var(--pr-abnormal); }
-.pr-badge code, .pr-mono {
-  font-family: "Geist Mono", ui-monospace, monospace; font-size: 0.78rem;
-  color: var(--pr-muted); background: none; padding: 0;
+.pr-badge .dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--pr-muted); }
+.pr-badge.is-ready .dot { background: var(--pr-normal); }
+.pr-badge.is-down .dot, .pr-badge.is-loading .dot { background: var(--pr-abnormal); }
+.pr-badge.is-down, .pr-badge.is-loading { color: var(--pr-muted); }
+.pr-badge code {
+  font-family: MONO; font-size: 0.75rem; color: var(--pr-muted); background: none; padding: 0;
 }
 
-.pr-title { font-size: 1rem; font-weight: 600; color: var(--pr-text); margin: 0.25rem 0 0.75rem; }
-.pr-hint { font-size: 0.8125rem; color: var(--pr-muted); margin: 0.25rem 0 0.5rem; }
-
-[data-testid="stImage"] img {
-  border-radius: 10px; background: var(--pr-frame); border: 1px solid var(--pr-border);
-  max-height: 460px; object-fit: contain;
+/* Cards */
+.st-key-pr-study, .st-key-pr-viewer, .st-key-pr-report, .st-key-pr-influence {
+  background: var(--pr-card); border: 1px solid var(--pr-border); border-radius: 20px;
+  padding: 1.35rem 1.4rem 1.45rem; box-shadow: var(--pr-shadow);
 }
-[data-testid="stBaseButton-primary"]:not(:disabled),
-[data-testid="stBaseButton-primary"]:not(:disabled) p { color: var(--pr-on-accent); font-weight: 600; }
-[data-testid="stFileUploaderDropzone"] { border-style: dashed; }
-
-.pr-empty {
-  border: 1px dashed var(--pr-border); border-radius: 10px; padding: 2.5rem 1.5rem;
-  text-align: center; color: var(--pr-muted); background: var(--pr-surface);
+.st-key-pr-influence { background: var(--pr-lav-soft); border-color: var(--pr-lav-border); }
+.pr-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.pr-head h3 {
+  margin: 0; padding: 0; font-size: 1.08rem; font-weight: 600; letter-spacing: -0.015em;
+  line-height: 1.3; color: var(--pr-text);
 }
-.pr-empty strong { display: block; color: var(--pr-text); font-weight: 600; margin-bottom: 0.35rem; }
-.pr-empty.is-warn strong { color: var(--pr-abnormal); }
+.pr-head p { margin: 0.15rem 0 0; font-size: 0.82rem; color: var(--pr-muted); }
+.pr-label { font-size: 0.875rem; font-weight: 500; color: var(--pr-text); margin-bottom: -0.35rem; }
 
-.pr-verdict {
-  display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 0.75rem 1rem;
-  padding: 1.25rem 1.25rem 1rem; border: 1px solid var(--pr-border); border-radius: 10px;
-  background: var(--pr-surface); box-shadow: var(--pr-shadow);
+/* Inputs and buttons */
+[data-testid="stFileUploaderDropzone"] {
+  background: var(--pr-sunken); border: 1.5px dashed var(--pr-border-strong); border-radius: 14px;
 }
+[data-testid="stBaseButton-primary"]:not(:disabled) {
+  background: var(--pr-accent); border-color: var(--pr-accent); color: var(--pr-on-accent);
+}
+[data-testid="stBaseButton-primary"]:not(:disabled):hover {
+  background: var(--pr-accent-hover); border-color: var(--pr-accent-hover); color: var(--pr-on-accent);
+}
+[data-testid="stBaseButton-primary"]:not(:disabled) p { color: var(--pr-on-accent); }
+.st-key-pr-analyze button { min-height: 3.1rem; border-radius: 12px; }
+.st-key-pr-analyze button p { font-weight: 600; font-size: 0.95rem; }
+.st-key-sample-normal button { background: var(--pr-normal-soft); color: var(--pr-normal); border-color: transparent; }
+.st-key-sample-abnormal button { background: var(--pr-abnormal-soft); color: var(--pr-abnormal); border-color: transparent; }
+.st-key-sample-false_prediction button { background: var(--pr-sunken); color: var(--pr-text); border-color: transparent; }
+[class*="st-key-sample-"] button p { color: inherit; font-weight: 500; }
+[class*="st-key-sample-"] button:hover { filter: brightness(0.97); }
+/*SELECTED*/
+button:focus-visible, .pr-copy:focus-visible { outline: 2px solid var(--pr-focus); outline-offset: 2px; }
+
+/* Radiographs */
+.st-key-pr-preview [data-testid="stImage"] img, .st-key-pr-viewer [data-testid="stImage"] img {
+  background: var(--pr-frame); border-radius: 14px; object-fit: contain; width: 100%;
+}
+.st-key-pr-preview [data-testid="stImage"] img { max-height: 420px; }
+.st-key-pr-viewer [data-testid="stImage"] img { max-height: 560px; }
+[data-testid="stImageCaption"] { color: var(--pr-muted); font-size: 0.8rem; }
+.pr-frame {
+  height: 13rem; border-radius: 14px; background: var(--pr-frame); display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem;
+  color: #A6AAA5; font-size: 0.85rem; text-align: center; padding: 1rem;
+}
+.pr-frame span { font-family: MONO; font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7D817C; }
+.pr-caption { font-size: 0.8rem; color: var(--pr-muted); margin-top: -0.35rem; }
+
+/* Assessment */
+.pr-assess { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 1rem; }
+.pr-score {
+  background: var(--pr-ink); color: var(--pr-on-ink); border: 1px solid var(--pr-ink-border);
+  border-radius: 20px; padding: 1.35rem 1.45rem 1.4rem; display: flex; flex-direction: column;
+  justify-content: space-between; gap: 1.25rem; min-height: 15rem;
+}
+.pr-score .pr-eyebrow { color: var(--pr-ink-muted); }
+.pr-score-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
 .pr-pill {
-  display: inline-block; padding: 0.3rem 0.75rem; border-radius: 999px;
-  font-weight: 600; font-size: 0.9375rem;
+  display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.32rem 0.8rem;
+  border-radius: 999px; font-weight: 600; font-size: 0.9rem;
 }
-.pr-pill.is-normal { color: var(--pr-normal); background: var(--pr-normal-soft); }
-.pr-pill.is-abnormal { color: var(--pr-abnormal); background: var(--pr-abnormal-soft); }
-.pr-score { text-align: right; }
-.pr-score b {
-  display: block; font-family: "Geist Mono", ui-monospace, monospace; font-weight: 500;
-  font-size: 2.25rem; line-height: 1.1; color: var(--pr-text);
+.pr-pill::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
+.pr-big {
+  font-family: MONO; font-weight: 500; font-size: clamp(3.1rem, 5.2vw, 4.4rem);
+  letter-spacing: -0.06em; line-height: 0.9; color: var(--pr-on-ink);
 }
-.pr-score span { font-size: 0.75rem; color: var(--pr-muted); }
-.pr-scale { grid-column: 1 / -1; position: relative; height: 2.25rem; margin-top: 0.25rem; }
-.pr-scale .track {
-  position: absolute; left: 0; right: 0; top: 0.6rem; height: 2px; background: var(--pr-border);
+.pr-big .pt { margin: 0 -0.2em; }
+.pr-big small { font-size: 0.5em; letter-spacing: -0.02em; margin-left: 0.08em; color: var(--pr-ink-muted); }
+.pr-score-label { margin-top: 0.55rem; font-size: 0.85rem; color: var(--pr-ink-muted); }
+.pr-score-rel {
+  margin-top: 0.9rem; padding-top: 0.75rem; border-top: 1px solid rgba(244, 242, 237, 0.12);
+  font-family: MONO; font-size: 0.74rem; color: var(--pr-on-ink);
 }
+.pr-thr {
+  background: var(--pr-card); border: 1px solid var(--pr-border); border-radius: 20px;
+  padding: 1.35rem 1.45rem 1.25rem; display: flex; flex-direction: column; gap: 0.9rem;
+  box-shadow: var(--pr-shadow);
+}
+.pr-thr-top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+.pr-thr-top b { font-family: MONO; font-weight: 500; font-size: 1.5rem; letter-spacing: -0.04em; color: var(--pr-text); }
+.pr-scale { position: relative; height: 2.9rem; }
+.pr-scale .bar {
+  position: absolute; left: 0; right: 0; top: 0.95rem; height: 0.55rem; border-radius: 999px;
+  overflow: hidden; display: flex;
+}
+.pr-scale .lo { background: var(--pr-normal-zone); }
+.pr-scale .hi { flex: 1; background: var(--pr-abnormal-zone); }
 .pr-scale .tick {
-  position: absolute; top: 0.2rem; width: 2px; height: 0.8rem; background: var(--pr-muted);
-  transform: translateX(-1px);
+  position: absolute; top: 0.45rem; width: 2px; height: 1.55rem; border-radius: 2px;
+  background: var(--pr-text); transform: translateX(-1px);
 }
 .pr-scale .marker {
-  position: absolute; top: 0.3rem; width: 0.65rem; height: 0.65rem; border-radius: 50%%;
-  transform: translateX(-50%%); border: 2px solid var(--pr-surface);
+  position: absolute; top: 0.68rem; width: 1.1rem; height: 1.1rem; border-radius: 50%;
+  transform: translateX(-50%); border: 3px solid var(--pr-card);
 }
-.pr-scale .marker.is-normal { background: var(--pr-normal); }
-.pr-scale .marker.is-abnormal { background: var(--pr-abnormal); }
-.pr-scale .labels {
-  position: absolute; left: 0; right: 0; top: 1.15rem; display: flex; justify-content: space-between;
-  font-family: "Geist Mono", ui-monospace, monospace; font-size: 0.72rem; color: var(--pr-muted);
+.pr-scale .marker.is-normal { background: var(--pr-normal); box-shadow: 0 0 0 1px var(--pr-normal); }
+.pr-scale .marker.is-abnormal { background: var(--pr-abnormal); box-shadow: 0 0 0 1px var(--pr-abnormal); }
+.pr-scale .ends {
+  position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between;
+  font-family: MONO; font-size: 0.7rem; color: var(--pr-muted);
 }
-.pr-scale .thr {
-  position: absolute; top: 1.15rem; transform: translateX(-50%%); white-space: nowrap;
-  font-family: "Geist Mono", ui-monospace, monospace; font-size: 0.72rem; color: var(--pr-text);
+.pr-key { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: 0.78rem; color: var(--pr-muted); }
+.pr-key i {
+  display: inline-block; width: 0.65rem; height: 0.65rem; border-radius: 3px; margin-right: 0.35rem;
+  vertical-align: -1px;
 }
-.pr-reason {
-  grid-column: 1 / -1; font-size: 0.875rem; color: var(--pr-muted);
-  border-top: 1px solid var(--pr-border); padding-top: 0.75rem;
-}
+.pr-reason { font-size: 0.86rem; line-height: 1.55; color: var(--pr-muted); border-top: 1px solid var(--pr-border); padding-top: 0.8rem; }
 .pr-reason strong { color: var(--pr-text); font-weight: 600; }
-
-.pr-chips { line-height: 2.1; font-size: 0.9375rem; color: var(--pr-text); }
-.pr-chip { padding: 0.15rem 0.35rem; border-radius: 6px; }
-.pr-chip.up { background: var(--pr-up-soft); }
-.pr-chip.down { background: var(--pr-down-soft); }
-.pr-legend { font-size: 0.78rem; color: var(--pr-muted); margin-top: 0.25rem; }
-.pr-legend i {
-  display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 3px;
-  vertical-align: -1px; margin: 0 0.3rem 0 0.6rem;
+.pr-reason code { font-family: MONO; font-size: 0.75rem; background: none; padding: 0; color: var(--pr-muted); }
+.pr-note {
+  display: flex; align-items: center; gap: 0.65rem; padding: 0.7rem 1rem; border-radius: 14px;
+  background: var(--pr-sunken); font-size: 0.84rem; color: var(--pr-text);
+}
+.pr-note b {
+  flex: none; width: 1.25rem; height: 1.25rem; border-radius: 50%; display: grid; place-items: center;
+  font-family: MONO; font-size: 0.7rem; background: var(--pr-text); color: var(--pr-bg);
 }
 
-.pr-report { display: grid; gap: 0.9rem; }
-.pr-report h4 {
-  margin: 0 0 0.2rem; font-size: 0.8125rem; font-weight: 600; color: var(--pr-muted);
+/* Text influence */
+.pr-tokens { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.pr-token {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.32rem 0.55rem 0.32rem 0.7rem;
+  border-radius: 10px; background: var(--pr-card); border: 1px solid var(--pr-lav-border);
+  font-size: 0.87rem; color: var(--pr-text);
 }
-.pr-report p { margin: 0; color: var(--pr-text); line-height: 1.6; max-width: 70ch; }
+.pr-token b { font-family: MONO; font-weight: 500; font-size: 0.76rem; }
+.pr-token.up b { color: var(--pr-abnormal); }
+.pr-token.down b { color: var(--pr-normal); }
+.pr-token em { font-style: normal; font-size: 0.68rem; color: var(--pr-muted); }
+.pr-legend { font-size: 0.76rem; line-height: 1.5; color: var(--pr-muted); }
 
+/* Report */
+.pr-meta { font-family: MONO; font-size: 0.74rem; color: var(--pr-muted); margin-top: 0.25rem; }
+.pr-copy {
+  font: inherit; font-size: 0.82rem; font-weight: 500; padding: 0.38rem 0.85rem; border-radius: 10px;
+  border: 1px solid var(--pr-border); background: var(--pr-card); color: var(--pr-text); cursor: pointer;
+}
+.pr-copy:hover { background: var(--pr-sunken); }
+.pr-doc section { padding: 0.95rem 0; border-top: 1px solid var(--pr-border); }
+.pr-doc section:first-child { border-top: 0; padding-top: 0.2rem; }
+.pr-doc section:last-child { padding-bottom: 0; }
+.pr-doc h4 {
+  margin: 0 0 0.35rem; padding: 0; font-family: MONO; font-size: 0.68rem; font-weight: 500;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--pr-muted);
+}
+.pr-doc p { margin: 0; font-size: 0.95rem; line-height: 1.68; color: var(--pr-text); max-width: 70ch; }
+
+/* States */
+.pr-empty {
+  background: var(--pr-card); border: 1px solid var(--pr-border); border-radius: 20px;
+  padding: 1.6rem 1.6rem 1.7rem; box-shadow: var(--pr-shadow);
+}
+.pr-empty h3 { margin: 0.35rem 0 0.3rem; padding: 0; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.025em; color: var(--pr-text); }
+.pr-empty > p { margin: 0; color: var(--pr-muted); font-size: 0.92rem; max-width: 52ch; }
+.pr-empty.is-warn h3 { color: var(--pr-abnormal); }
+.pr-steps { list-style: none; display: grid; gap: 0.55rem; margin: 1.2rem 0 0; padding: 0; }
+.pr-steps li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--pr-text); margin: 0; }
+.pr-steps b {
+  flex: none; width: 1.8rem; height: 1.8rem; border-radius: 9px; display: grid; place-items: center;
+  font-family: MONO; font-size: 0.72rem; font-weight: 500; background: var(--pr-sunken); color: var(--pr-text);
+}
+.pr-ghost { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 0.75rem; margin-top: 1.5rem; }
+.pr-ghost div {
+  border: 1.5px dashed var(--pr-border-strong); border-radius: 14px; height: 6.5rem; padding: 0.75rem 0.85rem;
+  font-family: MONO; font-size: 0.68rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--pr-muted);
+}
+.pr-ghost .wide { grid-column: 1 / -1; height: 11rem; }
+.pr-skel { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 1rem; }
+.pr-skel div { height: 15rem; border-radius: 20px; background: var(--pr-sunken); animation: pr-pulse 1.4s ease-in-out infinite; }
+.pr-skel .wide { grid-column: 1 / -1; height: 22rem; }
+.pr-skel .ink { background: var(--pr-ink); opacity: 0.85; }
+@keyframes pr-pulse { 50% { opacity: 0.5; } }
 .pr-error {
-  border: 1px solid var(--pr-abnormal); border-radius: 10px; padding: 0.9rem 1rem;
-  background: var(--pr-abnormal-soft); color: var(--pr-text); font-size: 0.9rem;
+  border: 1px solid var(--pr-danger); border-radius: 16px; padding: 1rem 1.15rem;
+  background: var(--pr-danger-soft); color: var(--pr-text); font-size: 0.9rem; line-height: 1.55;
 }
-.pr-error strong { color: var(--pr-abnormal); }
-
-.pr-skel { display: grid; gap: 0.75rem; }
-.pr-skel div {
-  height: 1rem; border-radius: 6px; background: var(--pr-sunken);
-  animation: pr-pulse 1.4s ease-in-out infinite;
-}
-.pr-skel .block { height: 9rem; }
-@keyframes pr-pulse { 50%% { opacity: 0.45; } }
+.pr-error strong { display: block; color: var(--pr-danger); margin-bottom: 0.2rem; }
 
 .pr-foot {
-  margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--pr-border);
-  font-size: 0.8125rem; color: var(--pr-muted);
+  margin-top: 2.25rem; padding-top: 1.1rem; border-top: 1px solid var(--pr-border);
+  font-size: 0.82rem; color: var(--pr-muted);
 }
-
 .pr-reveal { animation: pr-fade 180ms ease-out; }
 @keyframes pr-fade { from { opacity: 0; transform: translateY(4px); } }
 
+/* Desktop: the study inputs and the text influence stay in view beside the longer column. */
+@media (min-width: 1101px) {
+  [data-testid="stColumn"]:has(.st-key-pr-study), [data-testid="stColumn"]:has(.st-key-pr-influence) {
+    align-self: stretch;
+  }
+  [data-testid="stLayoutWrapper"]:has(> .st-key-pr-study),
+  [data-testid="stLayoutWrapper"]:has(> .st-key-pr-influence) { position: sticky; top: 1rem; }
+  .st-key-pr-study { max-height: calc(100dvh - 2rem); overflow-y: auto; scrollbar-width: thin; }
+}
 @media (prefers-reduced-motion: reduce) {
   .pr-skel div, .pr-reveal { animation: none; }
 }
-@media (max-width: 768px) {
-  [data-testid="stMainBlockContainer"], .block-container { padding-top: 3.5rem; }
-  .pr-score b { font-size: 1.85rem; }
-  .pr-verdict { padding: 1rem; }
+@media (max-width: 1100px) {
+  .st-key-pr-workspace > * > [data-testid="stHorizontalBlock"],
+  .st-key-pr-details > * > [data-testid="stHorizontalBlock"] { flex-wrap: wrap; }
+  .st-key-pr-workspace > * > [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
+  .st-key-pr-details > * > [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+    flex: 1 1 100% !important; width: 100% !important; min-width: 100%;
+  }
 }
-"""
+@media (max-width: 640px) {
+  [data-testid="stMainBlockContainer"], .block-container { padding: 3.5rem 1rem 2rem; }
+  .pr-assess, .pr-ghost, .pr-skel { grid-template-columns: minmax(0, 1fr); }
+  .st-key-pr-study, .st-key-pr-viewer, .st-key-pr-report, .st-key-pr-influence { padding: 1.1rem 1rem 1.2rem; border-radius: 18px; }
+  .pr-score { min-height: 0; }
+  .pr-mark { width: 2.75rem; height: 2.75rem; border-radius: 14px; }
+}
+""".replace("MONO", MONO)
 
 
 def _variables(name):
     return " ".join(f"--pr-{key}: {value};" for key, value in TOKENS[name].items())
 
 
-def css(theme_type):
-    """Both palettes; THEME_SCRIPT switches them live when the viewer changes theme.
+def css(theme_type, selected_sample=None):
+    """Both palettes; PAGE_SCRIPT switches them live when the viewer changes theme.
 
     The server-side theme only picks the default for the first paint, because Streamlit does
     not rerun the script when the theme changes in the browser.
@@ -207,11 +357,21 @@ def css(theme_type):
             f':root[data-pr-theme="{first}"] {{ {_variables(first)} }}',
         ]
     )
-    return "<style>" + CSS % {"vars": variables} + "</style>"
+    selected = ""
+    if selected_sample:
+        selected = (
+            f".st-key-sample-{selected_sample} button "
+            "{ border-color: currentColor; box-shadow: inset 0 0 0 1px currentColor; }"
+        )
+    return (
+        "<style>"
+        + CSS.replace("/*VARS*/", variables).replace("/*SELECTED*/", selected)
+        + "</style>"
+    )
 
 
-# Reads the background Streamlit actually painted and tags <html> with data-pr-theme.
-THEME_SCRIPT = r"""
+# Tags <html> with the theme Streamlit actually painted, and wires the report Copy button.
+PAGE_SCRIPT = r"""
 <script>
 (() => {
   const apply = () => {
@@ -222,11 +382,26 @@ THEME_SCRIPT = r"""
     document.documentElement.dataset.prTheme = dark ? "dark" : "light";
   };
   apply();
-  if (window.__prThemeWatch) return;
-  window.__prThemeWatch = new MutationObserver(() => requestAnimationFrame(apply));
-  window.__prThemeWatch.observe(document.head, { childList: true });
-  window.__prThemeWatch.observe(document.body, {
-    attributes: true, attributeFilter: ["class", "style"], subtree: true,
+  if (window.__prWired) return;
+  window.__prWired = true;
+  const watch = new MutationObserver(() => requestAnimationFrame(apply));
+  watch.observe(document.head, { childList: true });
+  watch.observe(document.body, { attributes: true, attributeFilter: ["class", "style"], subtree: true });
+  document.addEventListener("click", async (event) => {
+    const button = event.target.closest(".pr-copy");
+    if (!button) return;
+    const text = button.dataset.copy || "";
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      const area = Object.assign(document.createElement("textarea"), { value: text });
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+    button.textContent = "Copied";
+    setTimeout(() => { button.textContent = "Copy"; }, 1600);
   });
 })();
 </script>
@@ -239,81 +414,150 @@ def esc(value):
 
 def header(state, version):
     labels = {"ready": "Model ready", "down": "Service unavailable", "loading": "Model not ready"}
-    classes = {"ready": "is-ready", "down": "is-down", "loading": ""}
     version_html = f"<code>{esc(version)}</code>" if version else ""
     return (
-        '<div class="pr-header"><div class="pr-brand">'
-        "<strong>Pulmonary Review Assistant</strong>"
-        "<span>Chest X-ray and clinical indication, reviewed together</span></div>"
-        f'<div class="pr-badge {classes[state]}"><span class="pr-dot"></span>'
+        '<div class="pr-top"><div class="pr-brand">'
+        '<div class="pr-mark" aria-hidden="true"><i></i><i></i></div><div>'
+        '<div class="pr-eyebrow">Pulmonary Review Assistant</div>'
+        "<h1>Pulmonary Review</h1><p>Multimodal chest X-ray assessment</p></div></div>"
+        f'<div class="pr-badge is-{state}" role="status"><span class="dot"></span>'
         f"{labels[state]} {version_html}</div></div>"
     )
 
 
+def card_head(title, subtitle="", extra=""):
+    sub = f"<p>{esc(subtitle)}</p>" if subtitle else ""
+    return f'<div class="pr-head"><div><h3>{esc(title)}</h3>{sub}</div>{extra}</div>'
+
+
+def label(text):
+    return f'<div class="pr-label">{esc(text)}</div>'
+
+
+def caption(text):
+    return f'<div class="pr-caption">{esc(text)}</div>'
+
+
+def frame_placeholder(title="No radiograph", body="Upload an X-ray or load a sample case"):
+    return f'<div class="pr-frame"><span>{esc(title)}</span>{esc(body)}</div>'
+
+
 def empty(title, body, warn=False):
-    return f'<div class="pr-empty{" is-warn" if warn else ""}"><strong>{esc(title)}</strong>{esc(body)}</div>'
+    steps = ""
+    if not warn:
+        steps = (
+            '<ol class="pr-steps">'
+            "<li><b>01</b>Upload a chest X-ray, or load a sample case</li>"
+            "<li><b>02</b>Enter the clinical indication</li>"
+            "<li><b>03</b>Select Analyze Study</li></ol>"
+            '<div class="pr-ghost" aria-hidden="true"><div>Verdict and score</div>'
+            '<div>Decision threshold</div><div class="wide">Radiograph and heatmap</div>'
+            "<div>Text influence</div><div>Generated report</div></div>"
+        )
+    return (
+        f'<div class="pr-empty{" is-warn" if warn else ""}">'
+        '<div class="pr-eyebrow">Assessment</div>'
+        f"<h3>{esc(title)}</h3><p>{esc(body)}</p>{steps}</div>"
+    )
 
 
 def error(message):
-    return f'<div class="pr-error"><strong>Analysis failed.</strong> {esc(message)}</div>'
+    return (
+        f'<div class="pr-error" role="alert"><strong>Analysis failed</strong>{esc(message)}</div>'
+    )
 
 
 def skeleton():
-    return '<div class="pr-skel"><div class="block"></div><div></div><div style="width:70%"></div><div style="width:85%"></div></div>'
+    return (
+        '<div class="pr-skel" aria-label="Analyzing"><div class="ink"></div><div></div>'
+        '<div class="wide"></div></div>'
+    )
 
 
 def percent(value, digits=1):
     return f"{value * 100:.{digits}f}".rstrip("0").rstrip(".") + "%"
 
 
-def verdict(prediction, predicted_class):
+def assessment(prediction, predicted_class):
     score = min(max(float(prediction["probability"]), 0.0), 1.0)
     threshold = min(max(float(prediction["threshold"]), 0.0), 1.0)
-    state = "is-abnormal" if predicted_class == "Abnormal" else "is-normal"
+    kind = "abnormal" if predicted_class == "Abnormal" else "normal"
     tier = prediction["priority_tier"].replace("_", " ").capitalize()
+    color = INK_STATUS[kind]
+    whole, tenth = f"{score * 100:.1f}".split(".")
+    relation = "At or above" if score >= threshold else "Below"
     return (
-        '<div class="pr-verdict pr-reveal">'
-        f'<div><span class="pr-pill {state}">{esc(predicted_class)}</span></div>'
-        f'<div class="pr-score"><b>{score * 100:.1f}%</b><span>abnormality score</span></div>'
-        '<div class="pr-scale"><div class="track"></div>'
+        '<div class="pr-assess pr-reveal">'
+        '<div class="pr-score"><div class="pr-score-top">'
+        '<span class="pr-eyebrow">Model assessment</span>'
+        f'<span class="pr-pill" style="color:{color};background:{color}24">{esc(predicted_class)}</span>'
+        f'</div><div><div class="pr-big">{whole}<span class="pt">.</span>{tenth}<small>%</small></div>'
+        '<div class="pr-score-label">Abnormality score, uncalibrated</div>'
+        f'<div class="pr-score-rel">{relation} the {percent(threshold)} threshold</div></div></div>'
+        '<div class="pr-thr"><div class="pr-thr-top"><span class="pr-eyebrow">Decision threshold</span>'
+        f"<b>{percent(threshold)}</b></div>"
+        '<div class="pr-scale" role="img" '
+        f'aria-label="Score {score * 100:.1f}% against threshold {percent(threshold)}">'
+        f'<div class="bar"><div class="lo" style="width:{threshold * 100:.2f}%"></div><div class="hi"></div></div>'
         f'<div class="tick" style="left:{threshold * 100:.2f}%"></div>'
-        f'<div class="marker {state}" style="left:{score * 100:.2f}%"></div>'
-        '<div class="labels"><span>0%</span><span>100%</span></div>'
-        f'<div class="thr" style="left:{threshold * 100:.2f}%">threshold {percent(threshold)}</div></div>'
-        f'<div class="pr-reason"><strong>{esc(tier)}.</strong> {esc(prediction["priority_reason"])}</div>'
-        "</div>"
+        f'<div class="marker is-{kind}" style="left:{score * 100:.2f}%"></div>'
+        '<div class="ends"><span>0%</span><span>100%</span></div></div>'
+        '<div class="pr-key"><span><i style="background:var(--pr-normal-zone)"></i>'
+        f"Normal below {percent(threshold)}</span>"
+        '<span><i style="background:var(--pr-abnormal-zone)"></i>'
+        f"Abnormal at {percent(threshold)} or above</span></div>"
+        f'<div class="pr-reason"><strong>{esc(tier)}.</strong> {esc(prediction["priority_reason"])}<br>'
+        "Uncalibrated score against weak annotation labels, not the probability of disease. "
+        f"Model <code>{esc(prediction['model_version'])}</code>.</div></div></div>"
     )
 
 
-def chips(raw, highlights):
-    """Indication text with attributed tokens highlighted; positions come from the API."""
-    parts, cursor = [], 0
-    for item in sorted(highlights, key=lambda h: h["start"]):
-        parts.append(esc(raw[cursor : item["start"]]))
+def note(text):
+    return f'<div class="pr-note"><b aria-hidden="true">i</b><span>{esc(text)}</span></div>'
+
+
+def tokens(highlights, limit=8):
+    """Largest score changes first; values are the API's contributions in percentage points."""
+    ranked = sorted(highlights, key=lambda item: abs(item["contribution"]), reverse=True)[:limit]
+    chips = []
+    for item in ranked:
         kind = "up" if item["contribution"] > 0 else "down"
-        parts.append(f'<span class="pr-chip {kind}">{esc(raw[item["start"] : item["end"]])}</span>')
-        cursor = item["end"]
-    parts.append(esc(raw[cursor:]))
-    return f'<div class="pr-chips">{"".join(parts)}</div>'
+        field = " <em>comparison</em>" if item["field"] == "comparison" else ""
+        chips.append(
+            f'<span class="pr-token {kind}">{esc(item["token"])}{field}'
+            f"<b>{item['contribution'] * 100:+.2f}</b></span>"
+        )
+    return f'<div class="pr-tokens">{"".join(chips)}</div>'
 
 
 LEGEND = (
-    '<div class="pr-legend"><i style="background:var(--pr-up-soft)"></i>raises the score'
-    '<i style="background:var(--pr-down-soft)"></i>lowers it or has no effect</div>'
+    '<div class="pr-legend">Change in the abnormality score, in percentage points, when the word '
+    "is removed. Positive values raised the score.</div>"
 )
 
 
+def report_head(text):
+    first = str(text).strip().split("\n", 1)[0]
+    meta = (
+        f'<div class="pr-meta">{esc(first)}</div>' if first.startswith("Predicted Class:") else ""
+    )
+    button = f'<button type="button" class="pr-copy" data-copy="{esc(text)}">Copy</button>'
+    return f'<div class="pr-head"><div><h3>Generated report</h3>{meta}</div>{button}</div>'
+
+
 def report(text):
-    """Render the rule-based report's 'Heading:' blocks; the predicted class line is shown above."""
+    """Render the rule-based report's 'Heading:' blocks; the predicted class line is in the head."""
     sections = []
     for block in str(text).strip().split("\n\n"):
         heading, _, body = block.partition("\n")
         if not body and ":" in heading:
             continue  # "Predicted Class: ..." one-liner
-        sections.append(f"<div><h4>{esc(heading.rstrip(':'))}</h4><p>{esc(body.strip())}</p></div>")
+        sections.append(
+            f"<section><h4>{esc(heading.rstrip(':'))}</h4><p>{esc(body.strip())}</p></section>"
+        )
     if not sections:
-        sections.append(f"<div><p>{esc(text)}</p></div>")
-    return f'<div class="pr-report pr-reveal">{"".join(sections)}</div>'
+        sections.append(f"<section><p>{esc(text)}</p></section>")
+    return f'<div class="pr-doc pr-reveal">{"".join(sections)}</div>'
 
 
 def footer():

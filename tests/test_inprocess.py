@@ -105,4 +105,4 @@ def test_cloud_entrypoint_runs_ui_in_process(tmp_path, monkeypatch):
     st.cache_resource.clear()
     assert not page.exception
     assert any("model is not ready" in message.value for message in page.markdown)
-    assert next(button for button in page.button if button.label == "Analyze").disabled
+    assert next(button for button in page.button if button.label == "Analyze Study").disabled

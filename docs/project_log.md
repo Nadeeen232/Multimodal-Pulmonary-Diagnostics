@@ -188,6 +188,42 @@ connect, and the training pipeline. The screenshots in `docs/images/` were taken
 Docker build with the deployed model. We also set `toolbarMode = "minimal"` in
 `.streamlit/config.toml`, which hides Streamlit's "Deploy" button.
 
+## 6. Second UI redesign: the review workspace
+
+The first redesign (section 4) was clean but plain, so we redid the look with a stronger visual
+direction. It is still the same Streamlit app. The model, the API calls, the report text and the
+explanation numbers are unchanged.
+
+What changed on screen:
+
+- New palette: warm off-white or graphite backgrounds, white or dark cards with 20px corners, lime
+  for the one main action (Analyze Study) and a soft lavender card for the text influence. Normal
+  and Abnormal keep their own green and amber, separate from the decoration colors.
+- The result is laid out as cards of different sizes: a graphite card with the verdict and a large
+  score, a card showing the score against the 35% threshold, the radiograph viewer (X-ray, heatmap,
+  side by side), the text influence and the report.
+- The text influence now shows each word with its effect on the score in percentage points, for
+  example "breath +0.87", largest effect first. The full table is still under "Token details".
+- The report has a Copy button next to the downloads.
+- The sample buttons are now called Normal, Abnormal and Known error, and the main button is
+  Analyze Study.
+- On a desktop screen the study card and the text influence card stay in view while the results
+  scroll. Below 1100px wide everything stacks into one column.
+
+In the light theme Streamlit's own accent (toggles, the selected viewer tab, focus outlines) is
+graphite rather than lime, because lime on white is too faint for those controls. We switched
+`toolbarMode` from `"minimal"` to `"viewer"`, which keeps the menu's Settings entry (where you can
+switch light and dark) and still hides the "Deploy" button.
+
+One bug turned up while testing: uploading a file that is not a real image crashed the whole page,
+in the old UI too, because the preview could not read it. The preview now says "Preview
+unavailable", and Analyze Study shows the service's own message ("Unreadable or unsupported
+image").
+
+We checked the new UI in Chrome with the real model in both themes, at 900px and 390px wide, and in
+the Docker build (`scripts/verify_docker_stack.py` passed). The three sample cases still score
+16.0%, 90.5% and 53.2%. The README screenshots were retaken from the Docker build.
+
 ## Retraining it yourself
 
 1. Install the project with a CUDA build of PyTorch 2.13.0 (see the README), plus `ipykernel`.

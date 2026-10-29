@@ -14,7 +14,7 @@ for Pulmonary Pathology). Everything runs from Python source files. The two note
 > tags, its scores are not calibrated probabilities, and it has not been validated on patients
 > outside this dataset. A clinician has to check every output.
 
-![The Result panel after analyzing a held-out abnormal study: verdict, score against the 35% threshold, and the Grad-CAM heatmap](docs/images/ui-result-dark.png)
+![The review workspace after analyzing a held-out abnormal study: the study on the left, the verdict and score against the 35% threshold on the right, then the Grad-CAM heatmap](docs/images/ui-result-dark.png)
 
 ## Contents
 
@@ -54,28 +54,29 @@ evaluation"). It gives back:
 ## Try it in two minutes
 
 Open the [live app](https://multimodal-pulmonary-diagnostics.streamlit.app/). You do not need an
-X-ray of your own: the **Normal case**, **Abnormal case** and **Known miss** buttons load three
+X-ray of your own: the **Normal**, **Abnormal** and **Known error** sample buttons load three
 studies from the held-out test split, with their real indications. The model never trained on them.
 
 | Sample | Dataset label | Model score | Verdict |
 | --- | --- | ---: | --- |
-| Normal case (study 3212) | normal | 16.0% | Normal |
-| Abnormal case (study 2348) | abnormal | 90.5% | Abnormal |
-| Known miss (study 2829) | normal | 53.2% | Abnormal (a false positive, kept on purpose) |
+| Normal (study 3212) | normal | 16.0% | Normal |
+| Abnormal (study 2348) | abnormal | 90.5% | Abnormal |
+| Known error (study 2829) | normal | 53.2% | Abnormal (a false positive, kept on purpose) |
 
 The free hosting tier puts the app to sleep after a period without visitors. The first visit after
 that takes about a minute while the model loads.
 
-| Dark theme, empty study | Light theme, normal result |
+| Dark theme, before analysis | Light theme, normal result |
 | --- | --- |
-| ![Study panel with sample-case buttons in the dark theme](docs/images/ui-empty-dark.png) | ![Normal result in the light theme](docs/images/ui-result-light.png) |
+| ![Study card with the sample buttons, and the assessment area waiting for a study](docs/images/ui-empty-dark.png) | ![Normal result in the light theme](docs/images/ui-result-light.png) |
 
-The interface follows your system's light or dark setting. The report and the text evidence sit
-below the image:
+The interface follows your system's light or dark setting; you can also switch it under the
+menu (⋮) > Settings. Below the radiograph sit the text influence (each word's effect on the score,
+in percentage points) and the generated report, which you can copy or download:
 
 ![Text influence and the generated report in the light theme](docs/images/ui-report-light.png)
 
-On a phone the two panels stack into one column:
+On a phone everything stacks into one column, study first:
 
 <img src="docs/images/ui-mobile-dark.png" alt="The Study panel on a 390 px wide phone screen" width="260">
 
@@ -443,9 +444,12 @@ is why the retrained model ships with slightly lower numbers instead of being re
 matched.
 
 **Theme-aware UI without a frontend build.** The interface is plain Streamlit plus a small CSS
-layer ([`ui/theme.py`](ui/theme.py), [`.streamlit/config.toml`](.streamlit/config.toml)). Streamlit
-does not rerun the app when the viewer switches theme, so a short script reads the active background
-and swaps the color tokens in the browser.
+layer ([`ui/theme.py`](ui/theme.py), [`.streamlit/config.toml`](.streamlit/config.toml)). Cards are
+keyed containers, styled through the stable `st-key-*` classes Streamlit adds, so the CSS does not
+depend on generated class names. Streamlit does not rerun the app when the viewer switches theme, so
+a short script reads the active background and swaps the color tokens in the browser. Lime marks the
+one primary action; in the light theme Streamlit's own accent is graphite, because lime on white is
+too faint for toggles and focus outlines.
 
 ## Testing
 
