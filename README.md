@@ -1,3 +1,5 @@
+<img src="ui/assets/app_icon.png" alt="" width="72" align="left">
+
 # Pulmonary Review Assistant
 
 A multimodal model that reads a chest X-ray together with the clinical indication written for it,
@@ -71,7 +73,7 @@ that takes about a minute while the model loads.
 | ![Study card with the sample buttons, and the assessment area waiting for a study](docs/images/ui-empty-dark.png) | ![Normal result in the light theme](docs/images/ui-result-light.png) |
 
 The interface follows your system's light or dark setting; you can also switch it under the
-menu (⋮) > Settings. Below the radiograph sit the text influence (each word's effect on the score,
+⋮ menu (System, Light or Dark). Below the radiograph sit the text influence (each word's effect on the score,
 in percentage points) and the generated report, which you can copy or download:
 
 ![Text influence and the generated report in the light theme](docs/images/ui-report-light.png)

@@ -1,5 +1,5 @@
 # Pulmonary Review Assistant theme. Light and dark follow the viewer's system setting and can
-# be switched in the app menu under Settings. ui/theme.py mirrors these colors for the custom
+# be switched in the app menu (System, Light or Dark). ui/theme.py mirrors these colors for the custom
 # HTML blocks.
 #
 # Lime is the action color. In the light theme Streamlit's own accent (toggles, the selected
@@ -13,7 +13,7 @@ maxUploadSize = 10
 gatherUsageStats = false
 
 [client]
-# Viewer menu only: keeps Settings (theme switch), hides the developer Deploy button.
+# Viewer menu only: keeps the System/Light/Dark switch, hides the developer Deploy button.
 toolbarMode = "viewer"
 
 [theme]

@@ -207,13 +207,19 @@ What changed on screen:
 - The report has a Copy button next to the downloads.
 - The sample buttons are now called Normal, Abnormal and Known error, and the main button is
   Analyze Study.
-- On a desktop screen the study card and the text influence card stay in view while the results
-  scroll. Below 1100px wide everything stacks into one column.
+- The header and the browser tab use the team's app icon (a lime lungs mark on graphite,
+  `ui/assets/app_icon.png`, trimmed from the original artwork with a transparent edge).
+- Below 1100px wide everything stacks into one column.
 
 In the light theme Streamlit's own accent (toggles, the selected viewer tab, focus outlines) is
 graphite rather than lime, because lime on white is too faint for those controls. We switched
-`toolbarMode` from `"minimal"` to `"viewer"`, which keeps the menu's Settings entry (where you can
-switch light and dark) and still hides the "Deploy" button.
+`toolbarMode` from `"minimal"` to `"viewer"`, which keeps the System / Light / Dark switch at the
+top of the ⋮ menu and still hides the "Deploy" button.
+
+For a short while the study card and the text influence card stayed pinned on screen while the
+results scrolled. In a short browser window that squashed the clinical indication box into a thin
+strip with its own scroll arrows, so we removed the pinning: the whole page now scrolls as one, and
+a check at four window sizes finds no element with its own scrollbar.
 
 One bug turned up while testing: uploading a file that is not a real image crashed the whole page,
 in the old UI too, because the preview could not read it. The preview now says "Preview

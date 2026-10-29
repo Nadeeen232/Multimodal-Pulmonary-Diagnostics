@@ -36,6 +36,7 @@ TOKENS = {
         "danger-soft": "rgba(180, 35, 24, 0.07)",
         "frame": "#161718",
         "shadow": "0 1px 2px rgba(34, 35, 34, 0.04), 0 10px 30px -12px rgba(34, 35, 34, 0.10)",
+        "logo-ring": "transparent",
     },
     "dark": {
         "bg": "#171819",
@@ -65,6 +66,7 @@ TOKENS = {
         "danger-soft": "rgba(249, 112, 102, 0.10)",
         "frame": "#0E0F0F",
         "shadow": "0 1px 2px rgba(0, 0, 0, 0.35)",
+        "logo-ring": "#393B39",
     },
 }
 
@@ -92,14 +94,10 @@ CSS = """
   flex-wrap: wrap; padding-bottom: 0.5rem;
 }
 .pr-brand { display: flex; align-items: center; gap: 1.1rem; }
-.pr-mark {
-  flex: none; width: 3.25rem; height: 3.25rem; border-radius: 16px; background: var(--pr-ink);
-  display: flex; align-items: center; justify-content: center; gap: 3px;
-  border: 1px solid var(--pr-ink-border);
+.pr-logo {
+  flex: none; width: 3.25rem; height: 3.25rem; border-radius: 17%; display: block;
+  box-shadow: 0 0 0 1px var(--pr-logo-ring);
 }
-.pr-mark i { width: 0.62rem; height: 1.45rem; background: var(--pr-accent); }
-.pr-mark i:first-child { border-radius: 70% 25% 35% 60%; }
-.pr-mark i:last-child { border-radius: 25% 70% 60% 35%; }
 .pr-eyebrow {
   font-family: MONO; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.09em;
   text-transform: uppercase; color: var(--pr-muted);
@@ -309,15 +307,6 @@ button:focus-visible, .pr-copy:focus-visible { outline: 2px solid var(--pr-focus
 .pr-reveal { animation: pr-fade 180ms ease-out; }
 @keyframes pr-fade { from { opacity: 0; transform: translateY(4px); } }
 
-/* Desktop: the study inputs and the text influence stay in view beside the longer column. */
-@media (min-width: 1101px) {
-  [data-testid="stColumn"]:has(.st-key-pr-study), [data-testid="stColumn"]:has(.st-key-pr-influence) {
-    align-self: stretch;
-  }
-  [data-testid="stLayoutWrapper"]:has(> .st-key-pr-study),
-  [data-testid="stLayoutWrapper"]:has(> .st-key-pr-influence) { position: sticky; top: 1rem; }
-  .st-key-pr-study { max-height: calc(100dvh - 2rem); overflow-y: auto; scrollbar-width: thin; }
-}
 @media (prefers-reduced-motion: reduce) {
   .pr-skel div, .pr-reveal { animation: none; }
 }
@@ -334,7 +323,7 @@ button:focus-visible, .pr-copy:focus-visible { outline: 2px solid var(--pr-focus
   .pr-assess, .pr-ghost, .pr-skel { grid-template-columns: minmax(0, 1fr); }
   .st-key-pr-study, .st-key-pr-viewer, .st-key-pr-report, .st-key-pr-influence { padding: 1.1rem 1rem 1.2rem; border-radius: 18px; }
   .pr-score { min-height: 0; }
-  .pr-mark { width: 2.75rem; height: 2.75rem; border-radius: 14px; }
+  .pr-logo { width: 2.75rem; height: 2.75rem; }
 }
 """.replace("MONO", MONO)
 
@@ -412,12 +401,12 @@ def esc(value):
     return html.escape(str(value))
 
 
-def header(state, version):
+def header(state, version, logo_uri=""):
     labels = {"ready": "Model ready", "down": "Service unavailable", "loading": "Model not ready"}
     version_html = f"<code>{esc(version)}</code>" if version else ""
     return (
         '<div class="pr-top"><div class="pr-brand">'
-        '<div class="pr-mark" aria-hidden="true"><i></i><i></i></div><div>'
+        f'<img class="pr-logo" src="{esc(logo_uri)}" alt=""><div>'
         '<div class="pr-eyebrow">Pulmonary Review Assistant</div>'
         "<h1>Pulmonary Review</h1><p>Multimodal chest X-ray assessment</p></div></div>"
         f'<div class="pr-badge is-{state}" role="status"><span class="dot"></span>'

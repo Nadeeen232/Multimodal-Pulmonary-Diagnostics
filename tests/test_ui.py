@@ -89,3 +89,9 @@ def test_result_renders_verdict_heatmap_tokens_and_report(monkeypatch):
     assert "breath" in markdown and "+0.87" in markdown
     assert any(c.value == report for c in page.code)
     assert {"Download .txt", "Download .json"} <= {b.label for b in page.get("download_button")}
+
+
+def test_header_uses_the_app_icon(monkeypatch):
+    monkeypatch.setenv("API_URL", "http://127.0.0.1:1")
+    page = AppTest.from_file(APP, default_timeout=20).run()
+    assert any('class="pr-logo" src="data:image/png;base64,' in m.value for m in page.markdown)

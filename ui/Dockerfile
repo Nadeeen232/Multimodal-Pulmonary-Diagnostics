@@ -3,6 +3,7 @@ WORKDIR /ui
 COPY ui/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ui/app.py ui/theme.py ./
+COPY ui/assets ./assets
 COPY .streamlit ./.streamlit
 COPY demo_images/team29 ./demo_images/team29
 RUN useradd --create-home service

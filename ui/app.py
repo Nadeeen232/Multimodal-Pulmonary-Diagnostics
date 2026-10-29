@@ -37,9 +37,15 @@ SAMPLE_LABELS = {
     "false_prediction": "Known error",
 }
 
-st.set_page_config(
-    page_title="Pulmonary Review Assistant", page_icon=":material/pulmonology:", layout="wide"
-)
+ICON = HERE / "assets" / "app_icon.png"
+
+st.set_page_config(page_title="Pulmonary Review Assistant", page_icon=str(ICON), layout="wide")
+
+
+@st.cache_data
+def logo_uri():
+    """The app icon as a data URI for the header (no static file serving needed)."""
+    return "data:image/png;base64," + base64.b64encode(ICON.read_bytes()).decode()
 
 
 class HttpService:
@@ -208,7 +214,7 @@ state, model_version = service_state()
 theme_type = getattr(getattr(st.context, "theme", None), "type", None)
 st.markdown(theme.css(theme_type, st.session_state.get("sample")), unsafe_allow_html=True)
 st.html(theme.PAGE_SCRIPT, unsafe_allow_javascript=True)
-st.markdown(theme.header(state, model_version), unsafe_allow_html=True)
+st.markdown(theme.header(state, model_version, logo_uri()), unsafe_allow_html=True)
 
 with st.container(key="pr-workspace"):
     left, right = st.columns([0.42, 0.58], gap="large")
