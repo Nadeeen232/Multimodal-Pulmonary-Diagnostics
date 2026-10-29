@@ -16,6 +16,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", default="artifacts/team_classification")
     parser.add_argument("--output", default="artifacts/team_bundle")
+    parser.add_argument(
+        "--model-version",
+        help="Override the version name, e.g. for a retrained model on the same cohort",
+    )
     args = parser.parse_args()
     source, output = Path(args.source), Path(args.output)
     selection = json.loads((source / "selection.json").read_text())
@@ -39,7 +43,7 @@ def main():
     manifest = {
         "schema_version": 2,
         "kind": "team29_late",
-        "model_version": "0.2.0-team29-" + selection["cohort_manifest"][:8],
+        "model_version": args.model_version or "0.2.0-team29-" + selection["cohort_manifest"][:8],
         "preprocessing_version": PREPROCESS,
         "image_size": 384,
         "classes": ["proxy_negative", "proxy_abnormal"],

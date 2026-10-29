@@ -18,11 +18,11 @@ os.environ.setdefault("PULMONARY_IN_PROCESS", "1")
 os.environ.setdefault(
     "MODEL_BUNDLE_URL",
     "https://github.com/Nadeeen232/Multimodal-Pulmonary-Diagnostics"
-    "/releases/download/model-bundle-0.2.0-team29/SIC_0.2.0-team29_model_bundle.zip",
+    "/releases/download/model-bundle-0.2.1-team29/SIC_0.2.1-team29_model_bundle.zip",
 )
-# SHA-256 of dist/SIC_0.2.0-team29_model_bundle.zip in docs/submission_manifest.json.
+# SHA-256 of the retrained bundle exported by notebooks/Team29_Classification_Training.ipynb.
 os.environ.setdefault(
-    "MODEL_BUNDLE_SHA256", "839d4e39ee14dc96c7353fec4eff1e26d0c8f5f06da762ce95a229ec59bfc549"
+    "MODEL_BUNDLE_SHA256", "b6a0fda4d3359afe0b0b5c95dde0532fcc016394c622a2f9f17088127b9c3f95"
 )
 for name in ["OMP_NUM_THREADS", "MKL_NUM_THREADS"]:
     os.environ.setdefault(name, "2")

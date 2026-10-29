@@ -206,11 +206,17 @@ Community Cloud runs a single process, so
 [deploy/streamlit/streamlit_app.py](deploy/streamlit/streamlit_app.py) starts the UI
 with the FastAPI app in-process (`PULMONARY_IN_PROCESS=1`); requests use the same
 routes, validation and response schemas. The model bundle is downloaded from the
-`model-bundle-0.2.0-team29` GitHub release and loaded only if the archive matches the
-SHA-256 recorded in `docs/submission_manifest.json`; the engine then verifies each
-file against the bundle manifest.
+`model-bundle-0.2.1-team29` GitHub release and loaded only if the archive matches the
+SHA-256 pinned in the entrypoint; the engine then verifies each file against the
+bundle manifest.
 
-1. Attach `SIC_0.2.0-team29_model_bundle.zip` to a release tagged `model-bundle-0.2.0-team29`.
+The hosted bundle is `0.2.1-team29-47e281fc`, retrained on the same cohort with
+[notebooks/Team29_Classification_Training.ipynb](notebooks/Team29_Classification_Training.ipynb)
+because the original `0.2.0` export was not available for deployment. Its test results
+(fusion accuracy 0.809, ROC-AUC 0.874) are slightly below the original's (0.829, 0.882);
+see [docs/project_log.md](docs/project_log.md).
+
+1. Attach `SIC_0.2.1-team29_model_bundle.zip` to a release tagged `model-bundle-0.2.1-team29`.
 2. At [share.streamlit.io](https://share.streamlit.io), create an app from this repository,
    branch `main`, main file `deploy/streamlit/streamlit_app.py`.
 3. Under **Advanced settings**, choose **Python 3.12** (the pinned CPU Torch wheels require it).
